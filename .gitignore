@@ -1,0 +1,14 @@
+node_modules
+#public
+*.swp
+.tmp
+.sass-cache
+build
+dist/bower_components
+app/bower_components
+heroku
+/views
+#dist
+.DS_Store
+*.log
+*.sublime-workspace
