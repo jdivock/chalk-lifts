@@ -119,6 +119,13 @@ const Query = new GraphQLObjectType({
         }
       }
     },
+    accounts: {
+      type: new GraphQLList(Account),
+      args: {},
+      resolve() {
+        return knex('account');
+      }
+    },
     workout: {
       type: Workout,
       args: {
