@@ -10,7 +10,9 @@ It'd make a crapton more sense to just get this going with react native and pars
 $ psql -f scripts/createdb.sql <user>
 ```
 
-GraphIQL IDE is hosted at localhost:8080/ and here are some sample queries:
+GraphIQL IDE is hosted at localhost:8080, have fun poking around
+
+### Sample Queries
 
 Super basic query
 ```
