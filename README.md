@@ -4,10 +4,21 @@ Yeah, writing this (again), using graphQL/Relay, let's see if I can actually get
 
 It'd make a crapton more sense to just get this going with react native and parse or some precooked backend, but what would I learn then eh?
 
-## To load db
+## Setup
 
+Install postgres
+```
+$ brew install postgres
+```
+
+Run db init script
 ```
 $ psql -f scripts/createdb.sql <user>
+```
+
+Start up the server
+```
+$ npm start
 ```
 
 GraphIQL IDE is hosted at localhost:8080, have fun poking around
