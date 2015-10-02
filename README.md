@@ -7,5 +7,5 @@ It'd make a crapton more sense to just get this going with react native and pars
 ## To load db
 
 ```
-$ psql -f scriopts/createdb.sql apeshitfuckjacked
+$ psql -f scripts/createdb.sql <user>
 ```

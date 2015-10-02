@@ -1,8 +1,8 @@
-/* drop database apeshitfuckjacked;
+drop database apeshitfuckjacked;
 
 create database apeshitfuckjacked;
 \c apeshitfuckjacked
-*/
+
 
 DROP TABLE Account CASCADE;
 DROP TABLE Workout CASCADE;
