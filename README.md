@@ -88,3 +88,42 @@ mutation M {
   }
 }
 ```
+
+### Schema
+```
+type Account {
+  id: ID
+  name: String
+  email: String
+  workouts: [Workout]
+}
+
+type Lift {
+  id: ID
+  reps: Int
+  sets: Int
+  weight: Float
+  name: String
+  workoutid: ID
+  workout: Workout
+}
+
+type Mutation {
+  addLift(workoutid: ID!, name: String!, reps: Int!, sets: Int!, weight: Float!): Lift
+}
+
+type Query {
+  account(id: ID, email: String): Account
+  accounts: [Account]
+  workout(id: ID!): Workout
+  lift(id: ID!): Lift
+}
+
+type Workout {
+  id: ID
+  date: Int
+  name: String
+  account: Account
+  lifts: [Lift]
+}
+```
