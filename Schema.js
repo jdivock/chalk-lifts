@@ -1,9 +1,15 @@
 // TODO This feels like bad idea jeans
 // Also, bookshelf or knex might not be the worst idea
-import pgp from 'pg-promise';
+// import pgp from 'pg-promise';
+import knexLib from 'knex';
 import {CONN_STRING} from './config';
 
-var db = pgp()(CONN_STRING);
+console.log(CONN_STRING);
+
+var knex = knexLib({
+  client: 'pg',
+  connection: CONN_STRING
+});
 
 import {
   GraphQLSchema,
@@ -37,11 +43,7 @@ const Lift = new GraphQLObjectType({
     workout: {
       type: Workout,
       resolve(obj) {
-        return db.query(
-            'SELECT * FROM Workout WHERE id = ${id^}',
-            {id: obj.workoutid},
-            1
-        );
+        return knex('workout').where({ id: obj.workoutId }).first();
       }
     }
   })
@@ -62,20 +64,13 @@ const Workout = new GraphQLObjectType({
     account: {
       type: Account,
       resolve(obj) {
-        return db.query(
-            'SELECT * FROM Account WHERE id = ${id^}',
-            {id: obj.userid},
-            1
-        );
+        return knex('account').where({ id: obj.userId }).first();
       }
     },
     lifts: {
       type: new GraphQLList(Lift),
       resolve(obj) {
-        return db.query(
-            'SELECT * FROM Lift WHERE workoutId = ${id^}',
-            {id: obj.id}
-        );
+        return knex('lift').where({ workoutid: obj.id });
       }
     }
   })
@@ -97,10 +92,7 @@ const Account = new GraphQLObjectType({
     workouts: {
       type: new GraphQLList(Workout),
       resolve(obj) {
-        return db.query(
-            'SELECT * FROM Workout WHERE userId = ${id^}',
-            {id: obj.id}
-        );
+        return knex('workout').where({ userid: obj.id });
       }
     }
   })
@@ -109,29 +101,22 @@ const Account = new GraphQLObjectType({
 const Query = new GraphQLObjectType({
   name: 'Query',
   fields: () => ({
-    viewer: {
-      type: Account,
-      resolve(obj, args) {
-        return db.query(
-            'SELECT * FROM Account WHERE id = ${id^}',
-            {id: args.id},
-            1
-        );
-      }
-    },
     account: {
       type: Account,
       args: {
         id: {
-          type: new GraphQLNonNull(GraphQLID)
+          type: GraphQLID
+        },
+        email: {
+          type: GraphQLString
         }
       },
       resolve(obj, args) {
-        return db.query(
-            'SELECT * FROM Account WHERE id = ${id^}',
-            {id: args.id},
-            1
-        );
+        if (args.id) {
+          return knex('account').where({ id: args.id }).first();
+        } else if (args.email) {
+          return knex('account').where({ email: args.email }).first();
+        }
       }
     },
     workout: {
@@ -142,11 +127,7 @@ const Query = new GraphQLObjectType({
         }
       },
       resolve(obj, args) {
-        return db.query(
-            'SELECT * FROM Workout WHERE id = ${id^}',
-            {id: args.id},
-            1
-        );
+        return knex('workout').where({ id: args.id }).first();
       }
     },
     lift: {
@@ -157,7 +138,7 @@ const Query = new GraphQLObjectType({
         }
       },
       resolve(obj, args) {
-        return db.query('SELECT * FROM Lift WHERE id = ${id^}',{id: args.id},1);
+        return knex('lift').where({ id: args.id}).first();
       }
     }
   })
