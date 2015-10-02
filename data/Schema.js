@@ -183,7 +183,7 @@ const Mutation = new GraphQLObjectType({
       description: 'Add a lift to an existing workout',
       type: Lift,
       args: {
-        workoutId: {
+        workoutid: {
           type: new GraphQLNonNull(GraphQLID),
           description: 'Workout identifier'
         },
