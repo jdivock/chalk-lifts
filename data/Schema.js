@@ -189,19 +189,19 @@ const Mutation = new GraphQLObjectType({
         },
         name: {
           type: new GraphQLNonNull(GraphQLString),
-          description: 'Workout identifier'
+          description: 'Workout name'
         },
         reps: {
           type: new GraphQLNonNull(GraphQLInt),
-          description: 'Workout identifier'
+          description: 'Bro Reps'
         },
         sets: {
           type: new GraphQLNonNull(GraphQLInt),
-          description: 'Workout identifier'
+          description: 'Bro Sets'
         },
         weight: {
           type: new GraphQLNonNull(GraphQLFloat),
-          description: 'Workout identifier'
+          description: 'Bro Weight'
         },
       },
       resolve(obj, args) {
