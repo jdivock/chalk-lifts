@@ -22,16 +22,58 @@ import {
   GraphQLList
 } from 'graphql';
 
+import {
+  fromGlobalId,
+  globalIdField,
+  nodeDefinitions,
+} from 'graphql-relay';
+
+function getLift(id) {
+  return knex('lift').where({ id: id}).first();
+}
+
+function getWorkout(id) {
+  return knex('workout').where({ id: id}).first();
+}
+
+function getAccount(id) {
+  return knex('account').where({ id: id}).first();
+}
+
+var {nodeInterface, nodeField} = nodeDefinitions(
+    (globalId) => {
+      var {type, id} = fromGlobalId(globalId);
+      if (type === 'Lift') {
+        return getLift(id);
+      } else if (type === 'Account') {
+        return getAccount(id);
+      } else if (type === 'Workout') {
+        return getWorkout(id);
+      } else {
+        return null;
+      }
+    },
+    (obj) => {
+      if ( obj instanceof Lift ) {
+        return Lift;
+      } else if ( obj instanceof Account ) {
+        return Account;
+      } else if (obj instanceof Workout) {
+        return Workout;
+      } else {
+        return null;
+      }
+    }
+);
+
 const Lift = new GraphQLObjectType({
   description: 'Records of lifts recorded',
   name: 'Lift',
   fields: () => ({
-    id: {
-      type: GraphQLID
-    },
+    id: globalIdField('Lift'),
     reps: {
       description: 'Bro Reps',
-      type: GraphQLInt
+      type: GraphQLInt,
     },
     sets: {
       description: 'Bro Sets',
@@ -55,7 +97,8 @@ const Lift = new GraphQLObjectType({
         return knex('workout').where({ id: obj.workoutid }).first();
       }
     }
-  })
+  }),
+  interfaces: [nodeInterface],
 });
 
 const Workout = new GraphQLObjectType({
@@ -63,9 +106,7 @@ const Workout = new GraphQLObjectType({
     done during workout`,
   name: 'Workout',
   fields: () => ({
-    id: {
-      type: GraphQLID
-    },
+    id: globalIdField('Workout'),
     date: {
       description: 'Date of the workout',
       type: GraphQLInt
@@ -88,16 +129,15 @@ const Workout = new GraphQLObjectType({
         return knex('lift').where({ workoutid: obj.id });
       }
     }
-  })
+  }),
+  interfaces: [nodeInterface],
 });
 
 
 const Account = new GraphQLObjectType({
   name: 'Account',
   fields: () => ({
-    id: {
-      type: GraphQLID
-    },
+    id: globalIdField('Account'),
     name: {
       description: 'Name of user who holds the account',
       type: GraphQLString
@@ -113,7 +153,8 @@ const Account = new GraphQLObjectType({
         return knex('workout').where({ userid: obj.id });
       }
     }
-  })
+  }),
+  interfaces: [nodeInterface],
 });
 
 const Query = new GraphQLObjectType({
@@ -172,6 +213,7 @@ const Query = new GraphQLObjectType({
         return knex('lift').where({ id: args.id}).first();
       }
     },
+    node: nodeField,
   })
 });
 
@@ -189,19 +231,19 @@ const Mutation = new GraphQLObjectType({
         },
         name: {
           type: new GraphQLNonNull(GraphQLString),
-          description: 'Workout identifier'
+          description: 'Workout name'
         },
         reps: {
           type: new GraphQLNonNull(GraphQLInt),
-          description: 'Workout identifier'
+          description: 'Bro reps',
         },
         sets: {
           type: new GraphQLNonNull(GraphQLInt),
-          description: 'Workout identifier'
+          description: 'Bro sets',
         },
         weight: {
           type: new GraphQLNonNull(GraphQLFloat),
-          description: 'Workout identifier'
+          description: 'Bro weight',
         },
       },
       resolve(obj, args) {
