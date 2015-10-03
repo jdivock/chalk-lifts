@@ -9,3 +9,30 @@ It'd make a crapton more sense to just get this going with react native and pars
 ```
 $ psql -f scripts/createdb.sql <user>
 ```
+
+### Relay Queries
+
+```
+{
+  workout(id:1) {
+    id,
+    lifts {
+      edges {
+        cursor,
+        node {
+          id,
+          name,
+          sets,
+          reps
+        }
+      },
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+    }
+  }
+}
+```
