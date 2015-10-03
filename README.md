@@ -12,7 +12,7 @@ $ psql -f scripts/createdb.sql <user>
 
 ### Relay Queries
 
-```
+```js
 {
   workout(id:1) {
     id,
