@@ -3,6 +3,9 @@
 // import pgp from 'pg-promise';
 import knexLib from 'knex';
 import {CONN_STRING} from './config';
+import Debug from 'debug';
+
+var debug = Debug('Schema.js');
 
 console.log(CONN_STRING);
 
@@ -23,6 +26,9 @@ import {
 } from 'graphql';
 
 import {
+  connectionArgs,
+  connectionDefinitions,
+  connectionFromPromisedArray,
   fromGlobalId,
   globalIdField,
   nodeDefinitions,
@@ -66,6 +72,7 @@ var {nodeInterface, nodeField} = nodeDefinitions(
     }
 );
 
+
 const Lift = new GraphQLObjectType({
   description: 'Records of lifts recorded',
   name: 'Lift',
@@ -101,6 +108,13 @@ const Lift = new GraphQLObjectType({
   interfaces: [nodeInterface],
 });
 
+var {
+  connectionType: LiftConnection,
+} = connectionDefinitions({
+  name: 'Lift',
+  nodeType: Lift
+});
+
 const Workout = new GraphQLObjectType({
   description: `Workout entry, consisting of individual lifts
     done during workout`,
@@ -123,12 +137,24 @@ const Workout = new GraphQLObjectType({
       }
     },
     lifts: {
-      description: 'Lifts that the workout consisted of',
-      type: new GraphQLList(Lift),
-      resolve(obj) {
-        return knex('lift').where({ workoutid: obj.id });
+      type: LiftConnection,
+      args: connectionArgs,
+      resolve: (workout, args) => {
+        console.log(workout);
+        console.log(args);
+        connectionFromPromisedArray(
+            knex('lift').where({workoutid: workout.id}),
+            args
+            );
       }
-    }
+    },
+    // lifts: {
+    //   description: 'Lifts that the workout consisted of',
+    //   type: new GraphQLList(Lift),
+    //   resolve(obj) {
+    //     return knex('lift').where({ workoutid: obj.id });
+    //   }
+    // }
   }),
   interfaces: [nodeInterface],
 });
