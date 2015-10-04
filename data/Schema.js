@@ -7,8 +7,6 @@ import Debug from 'debug';
 
 var debug = Debug('Schema.js');
 
-console.log(CONN_STRING);
-
 var knex = knexLib({
   client: 'pg',
   connection: CONN_STRING
@@ -99,21 +97,17 @@ const Lift = new GraphQLObjectType({
       type: GraphQLID
     },
     workout: {
-      type: Workout,
-      resolve(obj) {
-        return knex('workout').where({ id: obj.workoutid }).first();
-      }
-    }
+      type: WorkoutConnection,
+      args: connectionArgs,
+      resolve: (lift, args) => connectionFromPromisedArray(
+          knex('workout').where({ id: lift.workoutid }),
+          args
+          )
+    },
   }),
   interfaces: [nodeInterface],
 });
 
-var {
-  connectionType: LiftConnection,
-} = connectionDefinitions({
-  name: 'Lift',
-  nodeType: Lift
-});
 
 const Workout = new GraphQLObjectType({
   description: `Workout entry, consisting of individual lifts
@@ -139,25 +133,15 @@ const Workout = new GraphQLObjectType({
     lifts: {
       type: LiftConnection,
       args: connectionArgs,
-      resolve: (workout, args) => {
-        console.log(workout);
-        console.log(args);
-        connectionFromPromisedArray(
-            knex('lift').where({workoutid: workout.id}),
-            args
-            );
-      }
+      resolve: (workout, args) => connectionFromPromisedArray(
+          knex('lift').where({workoutid: workout.id}),
+          args
+          )
     },
-    // lifts: {
-    //   description: 'Lifts that the workout consisted of',
-    //   type: new GraphQLList(Lift),
-    //   resolve(obj) {
-    //     return knex('lift').where({ workoutid: obj.id });
-    //   }
-    // }
   }),
   interfaces: [nodeInterface],
 });
+
 
 
 const Account = new GraphQLObjectType({
@@ -173,14 +157,30 @@ const Account = new GraphQLObjectType({
       type: GraphQLString
     },
     workouts: {
-      description: 'Workouts account has recorded',
-      type: new GraphQLList(Workout),
-      resolve(obj) {
-        return knex('workout').where({ userid: obj.id });
-      }
-    }
+      type: WorkoutConnection,
+      args: connectionArgs,
+      resolve: (account, args) => connectionFromPromisedArray(
+          knex('workout').where({ userid: account.id }),
+          args
+          )
+    },
   }),
   interfaces: [nodeInterface],
+});
+
+// Connections
+var {
+  connectionType: WorkoutConnection,
+} = connectionDefinitions({
+  name: 'Workout',
+  nodeType: Workout,
+});
+
+var {
+  connectionType: LiftConnection,
+} = connectionDefinitions({
+  name: 'Lift',
+  nodeType: Lift,
 });
 
 const Query = new GraphQLObjectType({
