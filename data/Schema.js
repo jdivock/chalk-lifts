@@ -280,69 +280,77 @@ const AddLiftMutation = mutationWithClientMutationId({
   outputFields: {
     newLift: {
       type: Lift,
-      resolve: ({localWorkoutId}) =>
-        getWorkout(localWorkoutId),
-      mutationAndGetPayload: ({workoutid, sets, reps, name, weight }) => {
-        var localWorkoutId = fromGlobalId(workoutid).id;
-
-        var liftEntry = {
-          workoutid: localWorkoutId,
-          name: name,
-          reps: reps,
-          sets: sets,
-          weight: weight,
-        };
-
-        return knex('lift')
-          .returning('id')
-          .insert(liftEntry);
+      resolve: (id) => {
+        // Some weird danger here, postgres returns an array of inserted
+        // ids, in this case just one, and the last member is the
+        // clientMutationId which I have no clue what it does.
+        // So this works for now but thar be dragons
+        debug('returned id', id);
+        return getLift(id[0]);
       },
-    }
-  }
-  // fields: {
-  //   addLift: {
-  //     description: 'Add a lift to an existing workout',
-  //     type: Lift,
-  //     args: {
-  //       workoutid: {
-  //         type: new GraphQLNonNull(GraphQLID),
-  //         description: 'Workout identifier'
-  //       },
-  //       name: {
-  //         type: new GraphQLNonNull(GraphQLString),
-  //         description: 'Workout name'
-  //       },
-  //       reps: {
-  //         type: new GraphQLNonNull(GraphQLInt),
-  //         description: 'Bro reps',
-  //       },
-  //       sets: {
-  //         type: new GraphQLNonNull(GraphQLInt),
-  //         description: 'Bro sets',
-  //       },
-  //       weight: {
-  //         type: new GraphQLNonNull(GraphQLFloat),
-  //         description: 'Bro weight',
-  //       },
-  //     },
-  //     resolve(obj, args) {
-  //       var liftEntry = {
-  //         workoutid: args.workoutid,
-  //         name: args.name,
-  //         reps: args.reps,
-  //         sets: args.sets,
-  //         weight: args.weight,
-  //       };
-  //
-  //       return knex('lift')
-  //         .returning('id')
-  //         .insert(liftEntry).then(function (id) {
-  //           return Object.assign(liftEntry, {id: id});
-  //         });
-  //     }
-  //   },
-  // },
+    },
+  },
+  mutateAndGetPayload: ({workoutid, sets, reps, name, weight }) => {
+    var localWorkoutId = fromGlobalId(workoutid).id;
+
+    var liftEntry = {
+      workoutid: localWorkoutId,
+      name: name,
+      reps: reps,
+      sets: sets,
+      weight: weight,
+    };
+
+    debug(liftEntry);
+
+    return knex('lift')
+      .returning('id')
+      .insert(liftEntry);
+  },
 });
+// fields: {
+//   addLift: {
+//     description: 'Add a lift to an existing workout',
+//     type: Lift,
+//     args: {
+//       workoutid: {
+//         type: new GraphQLNonNull(GraphQLID),
+//         description: 'Workout identifier'
+//       },
+//       name: {
+//         type: new GraphQLNonNull(GraphQLString),
+//         description: 'Workout name'
+//       },
+//       reps: {
+//         type: new GraphQLNonNull(GraphQLInt),
+//         description: 'Bro reps',
+//       },
+//       sets: {
+//         type: new GraphQLNonNull(GraphQLInt),
+//         description: 'Bro sets',
+//       },
+//       weight: {
+//         type: new GraphQLNonNull(GraphQLFloat),
+//         description: 'Bro weight',
+//       },
+//     },
+//     resolve(obj, args) {
+//       var liftEntry = {
+//         workoutid: args.workoutid,
+//         name: args.name,
+//         reps: args.reps,
+//         sets: args.sets,
+//         weight: args.weight,
+//       };
+//
+//       return knex('lift')
+//         .returning('id')
+//         .insert(liftEntry).then(function (id) {
+//           return Object.assign(liftEntry, {id: id});
+//         });
+//     }
+//   },
+// },
 
 var mutationType = new GraphQLObjectType({
   name: 'Mutation',
