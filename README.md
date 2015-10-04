@@ -117,3 +117,33 @@ Kitchen Sink
   }
 }
 ```
+
+Mutations
+
+Query
+```js
+mutation AddLiftMutation($input: AddLiftMutationInput!) {
+    addLiftMutation(input: $input) {
+    newLift {
+      id,
+      weight,
+      sets
+    },
+    clientMutationId
+  }
+}
+```
+
+Variables
+```js
+{
+  "input": {
+    "workoutid": "V29ya291dDox",
+    "sets": 1,
+    "reps": 2,
+    "weight": 100,
+    "name": "stuff",
+    "clientMutationId": 0
+  }
+}
+```
