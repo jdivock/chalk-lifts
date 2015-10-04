@@ -3,8 +3,11 @@
 // import pgp from 'pg-promise';
 import knexLib from 'knex';
 import {CONN_STRING} from './config';
+import Debug from 'debug';
 
-console.log(CONN_STRING);
+var debug = Debug('Schema.js');
+
+debug(CONN_STRING);
 
 var knex = knexLib({
   client: 'pg',
@@ -12,26 +15,77 @@ var knex = knexLib({
 });
 
 import {
-  GraphQLSchema,
-  GraphQLObjectType,
+  GraphQLFloat,
   GraphQLID,
   GraphQLInt,
-  GraphQLFloat,
-  GraphQLString,
+  GraphQLList,
   GraphQLNonNull,
-  GraphQLList
+  GraphQLObjectType,
+  GraphQLSchema,
+  GraphQLString,
 } from 'graphql';
+
+import {
+  connectionArgs,
+  connectionDefinitions,
+  connectionFromPromisedArray,
+  fromGlobalId,
+  globalIdField,
+  mutationWithClientMutationId,
+  nodeDefinitions,
+} from 'graphql-relay';
+
+
+// Helpers, probably belong in their own js file eventually
+
+function getLift(id) {
+  return knex('lift').where({ id: id}).first();
+}
+
+function getWorkout(id) {
+  return knex('workout').where({ id: id}).first();
+}
+
+function getAccount(id) {
+  return knex('account').where({ id: id}).first();
+}
+
+var {nodeInterface, nodeField} = nodeDefinitions(
+    (globalId) => {
+      var {type, id} = fromGlobalId(globalId);
+      if (type === 'Lift') {
+        return getLift(id);
+      } else if (type === 'Account') {
+        return getAccount(id);
+      } else if (type === 'Workout') {
+        return getWorkout(id);
+      } else {
+        return null;
+      }
+    },
+    (obj) => {
+      if ( obj instanceof Lift ) {
+        return Lift;
+      } else if ( obj instanceof Account ) {
+        return Account;
+      } else if (obj instanceof Workout) {
+        return Workout;
+      } else {
+        return null;
+      }
+    }
+);
+
+// OBJECTS
 
 const Lift = new GraphQLObjectType({
   description: 'Records of lifts recorded',
   name: 'Lift',
   fields: () => ({
-    id: {
-      type: GraphQLID
-    },
+    id: globalIdField('Lift'),
     reps: {
       description: 'Bro Reps',
-      type: GraphQLInt
+      type: GraphQLInt,
     },
     sets: {
       description: 'Bro Sets',
@@ -50,22 +104,24 @@ const Lift = new GraphQLObjectType({
       type: GraphQLID
     },
     workout: {
-      type: Workout,
-      resolve(obj) {
-        return knex('workout').where({ id: obj.workoutid }).first();
-      }
-    }
-  })
+      type: WorkoutConnection,
+      args: connectionArgs,
+      resolve: (lift, args) => connectionFromPromisedArray(
+          knex('workout').where({ id: lift.workoutid }),
+          args
+          )
+    },
+  }),
+  interfaces: [nodeInterface],
 });
+
 
 const Workout = new GraphQLObjectType({
   description: `Workout entry, consisting of individual lifts
     done during workout`,
   name: 'Workout',
   fields: () => ({
-    id: {
-      type: GraphQLID
-    },
+    id: globalIdField('Workout'),
     date: {
       description: 'Date of the workout',
       type: GraphQLInt
@@ -82,22 +138,21 @@ const Workout = new GraphQLObjectType({
       }
     },
     lifts: {
-      description: 'Lifts that the workout consisted of',
-      type: new GraphQLList(Lift),
-      resolve(obj) {
-        return knex('lift').where({ workoutid: obj.id });
-      }
-    }
-  })
+      type: LiftConnection,
+      args: connectionArgs,
+      resolve: (workout, args) => connectionFromPromisedArray(
+          knex('lift').where({workoutid: workout.id}),
+          args
+          )
+    },
+  }),
+  interfaces: [nodeInterface],
 });
-
 
 const Account = new GraphQLObjectType({
   name: 'Account',
   fields: () => ({
-    id: {
-      type: GraphQLID
-    },
+    id: globalIdField('Account'),
     name: {
       description: 'Name of user who holds the account',
       type: GraphQLString
@@ -107,14 +162,34 @@ const Account = new GraphQLObjectType({
       type: GraphQLString
     },
     workouts: {
-      description: 'Workouts account has recorded',
-      type: new GraphQLList(Workout),
-      resolve(obj) {
-        return knex('workout').where({ userid: obj.id });
-      }
-    }
-  })
+      type: WorkoutConnection,
+      args: connectionArgs,
+      resolve: (account, args) => connectionFromPromisedArray(
+          knex('workout').where({ userid: account.id }),
+          args
+          )
+    },
+  }),
+  interfaces: [nodeInterface],
 });
+
+// Connections
+
+var {
+  connectionType: WorkoutConnection,
+} = connectionDefinitions({
+  name: 'Workout',
+  nodeType: Workout,
+});
+
+var {
+  connectionType: LiftConnection,
+} = connectionDefinitions({
+  name: 'Lift',
+  nodeType: Lift,
+});
+
+// QUERIES
 
 const Query = new GraphQLObjectType({
   name: 'Query',
@@ -172,59 +247,121 @@ const Query = new GraphQLObjectType({
         return knex('lift').where({ id: args.id}).first();
       }
     },
+    node: nodeField,
   })
 });
 
+// MUTATIONS
 
-const Mutation = new GraphQLObjectType({
-  name: 'Mutation',
-  fields: {
-    addLift: {
-      description: 'Add a lift to an existing workout',
-      type: Lift,
-      args: {
-        workoutid: {
-          type: new GraphQLNonNull(GraphQLID),
-          description: 'Workout identifier'
-        },
-        name: {
-          type: new GraphQLNonNull(GraphQLString),
-          description: 'Workout name'
-        },
-        reps: {
-          type: new GraphQLNonNull(GraphQLInt),
-          description: 'Bro Reps'
-        },
-        sets: {
-          type: new GraphQLNonNull(GraphQLInt),
-          description: 'Bro Sets'
-        },
-        weight: {
-          type: new GraphQLNonNull(GraphQLFloat),
-          description: 'Bro Weight'
-        },
-      },
-      resolve(obj, args) {
-        var liftEntry = {
-          workoutid: args.workoutid,
-          name: args.name,
-          reps: args.reps,
-          sets: args.sets,
-          weight: args.weight,
-        };
-
-        return knex('lift')
-          .returning('id')
-          .insert(liftEntry).then(function (id) {
-            return Object.assign(liftEntry, {id: id});
-          });
-      }
+const AddLiftMutation = mutationWithClientMutationId({
+  name: 'AddLiftMutation',
+  inputFields: {
+    workoutid: {
+      type: new GraphQLNonNull(GraphQLID),
+      description: 'Workout identifier'
+    },
+    name: {
+      type: new GraphQLNonNull(GraphQLString),
+      description: 'Workout name'
+    },
+    reps: {
+      type: new GraphQLNonNull(GraphQLInt),
+      description: 'Bro reps',
+    },
+    sets: {
+      type: new GraphQLNonNull(GraphQLInt),
+      description: 'Bro sets',
+    },
+    weight: {
+      type: new GraphQLNonNull(GraphQLFloat),
+      description: 'Bro weight',
     },
   },
+  outputFields: {
+    newLift: {
+      type: Lift,
+      resolve: (id) => {
+        // Some weird danger here, postgres returns an array of inserted
+        // ids, in this case just one, and the last member is the
+        // clientMutationId which I have no clue what it does.
+        // So this works for now but thar be dragons
+        debug('returned id', id);
+        return getLift(id[0]);
+      },
+    },
+  },
+  mutateAndGetPayload: ({workoutid, sets, reps, name, weight }) => {
+    var localWorkoutId = fromGlobalId(workoutid).id;
+
+    var liftEntry = {
+      workoutid: localWorkoutId,
+      name: name,
+      reps: reps,
+      sets: sets,
+      weight: weight,
+    };
+
+    debug(liftEntry);
+
+    return knex('lift')
+      .returning('id')
+      .insert(liftEntry);
+  },
+});
+// fields: {
+//   addLift: {
+//     description: 'Add a lift to an existing workout',
+//     type: Lift,
+//     args: {
+//       workoutid: {
+//         type: new GraphQLNonNull(GraphQLID),
+//         description: 'Workout identifier'
+//       },
+//       name: {
+//         type: new GraphQLNonNull(GraphQLString),
+//         description: 'Workout name'
+//       },
+//       reps: {
+//         type: new GraphQLNonNull(GraphQLInt),
+//         description: 'Bro reps',
+//       },
+//       sets: {
+//         type: new GraphQLNonNull(GraphQLInt),
+//         description: 'Bro sets',
+//       },
+//       weight: {
+//         type: new GraphQLNonNull(GraphQLFloat),
+//         description: 'Bro weight',
+//       },
+//     },
+//     resolve(obj, args) {
+//       var liftEntry = {
+//         workoutid: args.workoutid,
+//         name: args.name,
+//         reps: args.reps,
+//         sets: args.sets,
+//         weight: args.weight,
+//       };
+//
+//       return knex('lift')
+//         .returning('id')
+//         .insert(liftEntry).then(function (id) {
+//           return Object.assign(liftEntry, {id: id});
+//         });
+//     }
+//   },
+// },
+
+var mutationType = new GraphQLObjectType({
+  name: 'Mutation',
+  fields: () => ({
+    addLiftMutation: AddLiftMutation,
+  }),
 });
 
 const Schema = new GraphQLSchema({
   query: Query,
-  mutation: Mutation
+  mutation: mutationType
 });
+
 export default Schema;
