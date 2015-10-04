@@ -70,6 +70,7 @@ var {nodeInterface, nodeField} = nodeDefinitions(
     }
 );
 
+// OBJECTS
 
 const Lift = new GraphQLObjectType({
   description: 'Records of lifts recorded',
@@ -142,8 +143,6 @@ const Workout = new GraphQLObjectType({
   interfaces: [nodeInterface],
 });
 
-
-
 const Account = new GraphQLObjectType({
   name: 'Account',
   fields: () => ({
@@ -169,6 +168,7 @@ const Account = new GraphQLObjectType({
 });
 
 // Connections
+
 var {
   connectionType: WorkoutConnection,
 } = connectionDefinitions({
@@ -182,6 +182,8 @@ var {
   name: 'Lift',
   nodeType: Lift,
 });
+
+// QUERIES
 
 const Query = new GraphQLObjectType({
   name: 'Query',
@@ -243,6 +245,7 @@ const Query = new GraphQLObjectType({
   })
 });
 
+// MUTATIONS
 
 const Mutation = new GraphQLObjectType({
   name: 'Mutation',
@@ -295,4 +298,5 @@ const Schema = new GraphQLSchema({
   query: Query,
   mutation: Mutation
 });
+
 export default Schema;
