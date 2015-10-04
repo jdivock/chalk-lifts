@@ -118,7 +118,7 @@ Kitchen Sink
 }
 ```
 
-Mutations
+#### Mutations
 
 Query
 ```js
