@@ -7,20 +7,22 @@ import Debug from 'debug';
 
 var debug = Debug('Schema.js');
 
+debug(CONN_STRING);
+
 var knex = knexLib({
   client: 'pg',
   connection: CONN_STRING
 });
 
 import {
-  GraphQLSchema,
-  GraphQLObjectType,
+  GraphQLFloat,
   GraphQLID,
   GraphQLInt,
-  GraphQLFloat,
-  GraphQLString,
+  GraphQLList,
   GraphQLNonNull,
-  GraphQLList
+  GraphQLObjectType,
+  GraphQLSchema,
+  GraphQLString,
 } from 'graphql';
 
 import {
@@ -29,8 +31,12 @@ import {
   connectionFromPromisedArray,
   fromGlobalId,
   globalIdField,
+  mutationWithClientMutationId,
   nodeDefinitions,
 } from 'graphql-relay';
+
+
+// Helpers, probably belong in their own js file eventually
 
 function getLift(id) {
   return knex('lift').where({ id: id}).first();
@@ -247,56 +253,107 @@ const Query = new GraphQLObjectType({
 
 // MUTATIONS
 
-const Mutation = new GraphQLObjectType({
-  name: 'Mutation',
-  fields: {
-    addLift: {
-      description: 'Add a lift to an existing workout',
+const AddLiftMutation = mutationWithClientMutationId({
+  name: 'AddLiftMutation',
+  inputFields: {
+    workoutid: {
+      type: new GraphQLNonNull(GraphQLID),
+      description: 'Workout identifier'
+    },
+    name: {
+      type: new GraphQLNonNull(GraphQLString),
+      description: 'Workout name'
+    },
+    reps: {
+      type: new GraphQLNonNull(GraphQLInt),
+      description: 'Bro reps',
+    },
+    sets: {
+      type: new GraphQLNonNull(GraphQLInt),
+      description: 'Bro sets',
+    },
+    weight: {
+      type: new GraphQLNonNull(GraphQLFloat),
+      description: 'Bro weight',
+    },
+  },
+  outputFields: {
+    newLift: {
       type: Lift,
-      args: {
-        workoutid: {
-          type: new GraphQLNonNull(GraphQLID),
-          description: 'Workout identifier'
-        },
-        name: {
-          type: new GraphQLNonNull(GraphQLString),
-          description: 'Workout name'
-        },
-        reps: {
-          type: new GraphQLNonNull(GraphQLInt),
-          description: 'Bro reps',
-        },
-        sets: {
-          type: new GraphQLNonNull(GraphQLInt),
-          description: 'Bro sets',
-        },
-        weight: {
-          type: new GraphQLNonNull(GraphQLFloat),
-          description: 'Bro weight',
-        },
-      },
-      resolve(obj, args) {
+      resolve: ({localWorkoutId}) =>
+        getWorkout(localWorkoutId),
+      mutationAndGetPayload: ({workoutid, sets, reps, name, weight }) => {
+        var localWorkoutId = fromGlobalId(workoutid).id;
+
         var liftEntry = {
-          workoutid: args.workoutid,
-          name: args.name,
-          reps: args.reps,
-          sets: args.sets,
-          weight: args.weight,
+          workoutid: localWorkoutId,
+          name: name,
+          reps: reps,
+          sets: sets,
+          weight: weight,
         };
 
         return knex('lift')
           .returning('id')
-          .insert(liftEntry).then(function (id) {
-            return Object.assign(liftEntry, {id: id});
-          });
-      }
-    },
-  },
+          .insert(liftEntry);
+      },
+    }
+  }
+  // fields: {
+  //   addLift: {
+  //     description: 'Add a lift to an existing workout',
+  //     type: Lift,
+  //     args: {
+  //       workoutid: {
+  //         type: new GraphQLNonNull(GraphQLID),
+  //         description: 'Workout identifier'
+  //       },
+  //       name: {
+  //         type: new GraphQLNonNull(GraphQLString),
+  //         description: 'Workout name'
+  //       },
+  //       reps: {
+  //         type: new GraphQLNonNull(GraphQLInt),
+  //         description: 'Bro reps',
+  //       },
+  //       sets: {
+  //         type: new GraphQLNonNull(GraphQLInt),
+  //         description: 'Bro sets',
+  //       },
+  //       weight: {
+  //         type: new GraphQLNonNull(GraphQLFloat),
+  //         description: 'Bro weight',
+  //       },
+  //     },
+  //     resolve(obj, args) {
+  //       var liftEntry = {
+  //         workoutid: args.workoutid,
+  //         name: args.name,
+  //         reps: args.reps,
+  //         sets: args.sets,
+  //         weight: args.weight,
+  //       };
+  //
+  //       return knex('lift')
+  //         .returning('id')
+  //         .insert(liftEntry).then(function (id) {
+  //           return Object.assign(liftEntry, {id: id});
+  //         });
+  //     }
+  //   },
+  // },
+});
+
+var mutationType = new GraphQLObjectType({
+  name: 'Mutation',
+  fields: () => ({
+    addLiftMutation: AddLiftMutation,
+  }),
 });
 
 const Schema = new GraphQLSchema({
   query: Query,
-  mutation: Mutation
+  mutation: mutationType
 });
 
 export default Schema;
