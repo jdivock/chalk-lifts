@@ -109,7 +109,7 @@ $ psql -f scripts/createdb.sql <user>
       edges {
         cursor,
         node {
-          id, 
+          id,
           name,
           date
         }

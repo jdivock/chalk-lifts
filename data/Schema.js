@@ -64,11 +64,13 @@ var {nodeInterface, nodeField} = nodeDefinitions(
       }
     },
     (obj) => {
-      if ( obj instanceof Lift ) {
+      // This is super hacky, might need bookshelf or a way
+      // to define types to decent what the obj is
+      if ( obj.workoutId ) {
         return Lift;
-      } else if ( obj instanceof Account ) {
+      } else if ( obj.email ) {
         return Account;
-      } else if (obj instanceof Workout) {
+      } else if (obj.accountId) {
         return Workout;
       } else {
         return null;
