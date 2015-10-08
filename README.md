@@ -12,6 +12,7 @@ $ psql -f scripts/createdb.sql <user>
 
 ### Relay Queries
 
+##### Basic
 ```js
 {
   workout(id:1) {
@@ -37,7 +38,7 @@ $ psql -f scripts/createdb.sql <user>
 }
 ```
 
-Getting 'first' for free with connections
+##### Getting 'first' for free with connections
 ```js
 {
   workout(id:1) {
@@ -63,7 +64,7 @@ Getting 'first' for free with connections
 }
 ```
 
-Kitchen Sink
+##### Kitchen Sink
 ```
 {
   liftToWorkout: lift(id:1) {
@@ -118,7 +119,7 @@ Kitchen Sink
 }
 ```
 
-Finding by globalId
+##### Finding by globalId
 ```js
 query AccountQuery {
   node(id: "QWNjb3VudDox") {
@@ -131,9 +132,41 @@ query AccountQuery {
 }
 ```
 
-Mutations
+##### Using Cursors
+```js
+{
+  workout: workout(id:1) {
+    id,
+    name,
+    lifts(first: 1) {
+      edges {
+        cursor,
+        node {
+          id,
+          name
+        }
+      }
+    }
+  }
+  workoutCont: workout(id:1) {
+    id,
+    name,
+    lifts(first: 2 after: "YXJyYXljb25uZWN0aW9uOjA=") {
+      edges {
+        cursor,
+        node {
+          id,
+          name
+        }
+      }
+    }
+  }
+}
+```
 
-Query
+#### Mutations
+
+##### Query
 ```js
 mutation AddLiftMutation($input: AddLiftMutationInput!) {
     addLiftMutation(input: $input) {
@@ -147,7 +180,7 @@ mutation AddLiftMutation($input: AddLiftMutationInput!) {
 }
 ```
 
-Variables
+##### Variables
 ```js
 {
   "input": {
