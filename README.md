@@ -151,7 +151,11 @@ query AccountQuery {
   workoutCont: workout(id:1) {
     id,
     name,
-    lifts(first: 2 after: "YXJyYXljb25uZWN0aW9uOjA=") {
+    lifts(first: 5 after: "YXJyYXljb25uZWN0aW9uOjA=") {
+      pageInfo {
+        hasPreviousPage,
+        hasNextPage
+      }
       edges {
         cursor,
         node {
