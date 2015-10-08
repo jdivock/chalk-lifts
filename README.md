@@ -118,6 +118,19 @@ Kitchen Sink
 }
 ```
 
+Finding by globalId
+```js
+query AccountQuery {
+  node(id: "QWNjb3VudDox") {
+    id
+    ... on Account {
+      name,
+      email
+    }
+  }
+}
+```
+
 Mutations
 
 Query
