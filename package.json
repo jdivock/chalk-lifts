@@ -1,25 +1,12 @@
 {
-  "name": "graphql-nodejs-newsfeed",
-  "version": "1.0.0",
-  "description": "Example of a GraphQL Node.js backend for a news feed, built with Hapi and SQLite",
+  "name": "lift-graphql",
+  "version": "0.0.1",
+  "description": "Relay/GraphQL lift tracker",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/reindexio/graphql-nodejs-newsfeed.git"
-  },
-  "author": "Mikhail <freiksenet@gmail.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/reindexio/graphql-nodejs-newsfeed/issues"
-  },
-  "homepage": "https://github.com/reindexio/graphql-nodejs-newsfeed#readme",
   "dependencies": {
     "babel": "^5.8.19",
     "debug": "^2.2.0",
+    "eslint": "^1.10.3",
     "express": "^4.13.3",
     "express-graphql": "^0.3.0",
     "graphiql": "^0.2.4",
@@ -31,8 +18,29 @@
   },
   "devDependencies": {
     "babel-eslint": "^4.1.3",
-    "eslint": "^0.24.1",
+    "eslint": "^1.10.3",
     "eslint-plugin-react": "^3.5.0",
     "mocha": "^2.2.5"
-  }
+  },
+  "scripts": {
+    "test": "eslint .",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jdivock/lift-graphql.git"
+  },
+  "keywords": [
+    "graphql",
+    "relay",
+    "es6",
+    "node",
+    "javascript"
+  ],
+  "author": "Jason Divock",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jdivock/lift-graphql/issues"
+  },
+  "homepage": "https://github.com/jdivock/lift-graphql#readme"
 }
