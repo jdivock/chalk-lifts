@@ -1,5 +1,5 @@
 /* eslint no-console: 0 */
-import Schema from './data/Schema';
+import {schema} from './data/Schema';
 import WebpackDevServer from 'webpack-dev-server';
 import express from 'express';
 import graphQLHTTP from 'express-graphql';
@@ -11,8 +11,7 @@ const APP_PORT = 3000;
 
 // Expose a GraphQL endpoint
 const graphQLServer = express();
-
-graphQLServer.use('/graphql', graphQLHTTP({ schema: Schema, pretty: true }));
+graphQLServer.use('/', graphQLHTTP({ schema, pretty: true }));
 graphQLServer.listen(GRAPHQL_PORT, () => console.log(
   `GraphQL Server is now running on http://localhost:${GRAPHQL_PORT}`
 ));
@@ -26,7 +25,7 @@ const compiler = webpack({
         loader: 'babel',
         test: /\.js$/,
         cacheDirectory: true,
-        presets: ['es2015', 'react', 'stage-0'],
+        presets: ['es2015', 'react', 'stage-0', 'relay'],
       },
     ],
   },

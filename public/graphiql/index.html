@@ -1,41 +1,114 @@
+
 <!--
- *  Copyright (c) 2015, Facebook, Inc.
- *  All rights reserved.
- *
- *  This source code is licensed under the license found in the
- *  LICENSE file in the root directory of this source tree.
- *
+  The request to this GraphQL server provided the header "Accept: text/html"
+  and as a result has been presented GraphiQL - an in-browser IDE for
+  exploring GraphQL.
+
+  If you wish to receive JSON, provide the header "Accept: application/json" or
+  add "&raw" to the end of the URL within a browser.
 -->
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="./graphiql.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/0.9.0/fetch.min.js"></script>
-    <script src="./graphiql.js"></script>
+    <style>
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  width: 100%;
+}
+    </style>
+    <link href="//cdn.jsdelivr.net/graphiql/0.4.9/graphiql.css" rel="stylesheet" />
+    <script src="//cdn.jsdelivr.net/fetch/0.9.0/fetch.min.js"></script>
+    <script src="//cdn.jsdelivr.net/react/0.14.7/react.min.js"></script>
+    <script src="//cdn.jsdelivr.net/react/0.14.7/react-dom.min.js"></script>
+    <script src="//cdn.jsdelivr.net/graphiql/0.4.9/graphiql.min.js"></script>
   </head>
   <body>
-    Loading...
     <script>
+// Collect the URL parameters
+var parameters = {};
+window.location.search.substr(1).split('&').forEach(function (entry) {
+  var eq = entry.indexOf('=');
+  if (eq >= 0) {
+    parameters[decodeURIComponent(entry.slice(0, eq))] =
+      decodeURIComponent(entry.slice(eq + 1));
+  }
+});
 
-      // Defines a GraphQL fetcher using the fetch API.
-      function graphQLFetcher(graphQLParams) {
-        return fetch(window.location.origin + '/graphql', {
-          method: 'post',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(graphQLParams),
-        }).then(function (response) {
-          return response.json()
-        });
-      }
+// Produce a Location query string from a parameter object.
+function locationQuery(params) {
+  return '?' + Object.keys(params).map(function (key) {
+    return encodeURIComponent(key) + '=' +
+      encodeURIComponent(params[key]);
+  }).join('&');
+}
 
-      // Render <GraphiQL /> into the body.
-      React.render(
-        React.createElement(GraphiQL, {
-          fetcher: graphQLFetcher
-        }),
-        document.body
-      );
+// Derive a fetch URL from the current URL, sans the GraphQL parameters.
+var graphqlParamNames = {
+  query: true,
+  variables: true,
+  operationName: true
+};
+
+var otherParams = {};
+for (var k in parameters) {
+  if (parameters.hasOwnProperty(k) && graphqlParamNames[k] !== true) {
+    otherParams[k] = parameters[k];
+  }
+}
+
+var fetchURL = window.location.origin + '/graphql';
+
+// Defines a GraphQL fetcher using the fetch API.
+function graphQLFetcher(graphQLParams) {
+  return fetch(fetchURL, {
+    method: 'post',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(graphQLParams),
+    credentials: 'include',
+  }).then(function (response) {
+    return response.text();
+  }).then(function (responseBody) {
+    try {
+      return JSON.parse(responseBody);
+    } catch (error) {
+      return responseBody;
+    }
+  });
+}
+
+// When the query and variables string is edited, update the URL bar so
+// that it can be easily shared.
+function onEditQuery(newQuery) {
+  parameters.query = newQuery;
+  updateURL();
+}
+
+function onEditVariables(newVariables) {
+  parameters.variables = newVariables;
+  updateURL();
+}
+
+function updateURL() {
+  history.replaceState(null, null, locationQuery(parameters));
+}
+
+// Render <GraphiQL /> into the body.
+React.render(
+    React.createElement(GraphiQL, {
+      fetcher: graphQLFetcher,
+      onEditQuery: onEditQuery,
+      onEditVariables: onEditVariables,
+      query: undefined,
+      response: null,
+      variables: null
+    }),
+    document.body
+    );
     </script>
   </body>
 </html>

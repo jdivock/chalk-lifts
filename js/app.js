@@ -1,8 +1,9 @@
 import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import BumLifts from './components/BumLifts';
 
 ReactDOM.render(
-    <div>Sup</div>,
+    <BumLifts>Sup</BumLifts>,
     document.getElementById('root')
 );
