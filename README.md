@@ -1,4 +1,4 @@
-# Lift-GraphQL
+# Lift-GraphQL [![Build Status](https://travis-ci.org/jdivock/lift-graphql.svg?branch=master)](https://travis-ci.org/jdivock/lift-graphql)
 
 Yeah, writing this (again), using graphQL/Relay, let's see if I can actually get it working.
 
