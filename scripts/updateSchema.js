@@ -1,6 +1,11 @@
 #!/usr/bin/env babel-node --optional es7.asyncFunctions
 /* eslint no-console: 0 */
 
+/* NOTE If this hangs and dies it's because the schema.js file
+ * is grabbing a db connection which causes the process to
+ * hang, commit it out and you can then update the schema.
+ * Trying to use rewire to fix it, but no luck
+ */
 import fs from 'fs';
 import path from 'path';
 import { Schema } from '../data/schema';
