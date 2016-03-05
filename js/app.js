@@ -1,9 +1,15 @@
 import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import BumLifts from './components/BumLifts';
+import Relay from 'react-relay';
+
+import App from './components/App';
+import AppHomeRoute from './routes/AppHomeRoute';
 
 ReactDOM.render(
-    <BumLifts>Sup</BumLifts>,
+    <Relay.RootContainer
+      Component={App}
+      route={new AppHomeRoute()}
+    />,
     document.getElementById('root')
 );

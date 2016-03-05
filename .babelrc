@@ -3,14 +3,10 @@
   "presets": [
     "react",
     "es2015",
-    "stage-0",
-    {
-      "plugins": [
-        "./build/babelRelayPlugin"
-      ]
-    },
+    "stage-0"
   ],
   "plugins": [
-    "transform-object-rest-spread"
+    "transform-object-rest-spread",
+    "./build/babelRelayPlugin"
   ]
 }
