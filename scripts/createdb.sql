@@ -20,6 +20,7 @@ CREATE TABLE Workout
 	id serial primary key,
 	date timestamp default current_timestamp,
 	name VARCHAR(100),
+	comments VARCHAR(500),
 	userId INTEGER,
 	FOREIGN KEY(userId) REFERENCES Account(id)
 );
@@ -32,6 +33,7 @@ CREATE TABLE Lift
 	reps INTEGER,
 	sets INTEGER,
 	weight INTEGER,
+	comments VARCHAR(500),
 	FOREIGN KEY(workoutId) REFERENCES Workout(id)
 );
 

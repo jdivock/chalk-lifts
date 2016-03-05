@@ -98,6 +98,10 @@ const Lift = new GraphQLObjectType({
       description: 'Lift Name',
       type: GraphQLString,
     },
+    comments: {
+      description: 'Lift Comments',
+      type: GraphQLString,
+    },
     workoutid: {
       description: 'Identifier of workout lift pertains to',
       type: GraphQLID,
@@ -127,6 +131,10 @@ const Workout = new GraphQLObjectType({
     },
     name: {
       description: 'Name of the Workout',
+      type: GraphQLString,
+    },
+    comments: {
+      description: 'Lift Comments',
       type: GraphQLString,
     },
     account: {

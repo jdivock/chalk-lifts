@@ -1,0 +1,81 @@
+type Account implements Node {
+  id: ID!
+  name: String
+  email: String
+  workouts(after: String, first: Int, before: String, last: Int): WorkoutConnection
+}
+
+input AddLiftMutationInput {
+  workoutid: ID!
+  name: String!
+  reps: Int!
+  sets: Int!
+  weight: Float!
+  clientMutationId: String!
+}
+
+type AddLiftMutationPayload {
+  newLift: Lift
+  clientMutationId: String!
+}
+
+type Lift implements Node {
+  id: ID!
+  reps: Int
+  sets: Int
+  weight: Float
+  name: String
+  workoutid: ID
+  workout(after: String, first: Int, before: String, last: Int): WorkoutConnection
+}
+
+type LiftConnection {
+  pageInfo: PageInfo!
+  edges: [LiftEdge]
+}
+
+type LiftEdge {
+  node: Lift
+  cursor: String!
+}
+
+type Mutation {
+  addLiftMutation(input: AddLiftMutationInput!): AddLiftMutationPayload
+}
+
+interface Node {
+  id: ID!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type Query {
+  account(id: ID, email: String): Account
+  accounts: [Account]
+  workout(id: ID!): Workout
+  lift(id: ID!): Lift
+  node(id: ID!): Node
+}
+
+type Workout implements Node {
+  id: ID!
+  date: Int
+  name: String
+  account: Account
+  lifts(after: String, first: Int, before: String, last: Int): LiftConnection
+}
+
+type WorkoutConnection {
+  pageInfo: PageInfo!
+  edges: [WorkoutEdge]
+}
+
+type WorkoutEdge {
+  node: Workout
+  cursor: String!
+}
