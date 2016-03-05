@@ -25,6 +25,7 @@ type Lift implements Node {
   sets: Int
   weight: Float
   name: String
+  comments: String
   workoutid: ID
   workout(after: String, first: Int, before: String, last: Int): WorkoutConnection
 }
@@ -66,6 +67,7 @@ type Workout implements Node {
   id: ID!
   date: Int
   name: String
+  comments: String
   account: Account
   lifts(after: String, first: Int, before: String, last: Int): LiftConnection
 }

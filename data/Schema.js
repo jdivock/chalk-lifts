@@ -1,16 +1,8 @@
 /* eslint no-use-before-define:0 */
-import knexLib from 'knex';
-import { CONN_STRING } from './config';
+import knex from './dbConnection';
 import deb from 'debug';
 
 const debug = deb('Schema.js');
-
-debug(CONN_STRING);
-
-const knex = knexLib({
-  client: 'pg',
-  connection: CONN_STRING,
-});
 
 import {
   GraphQLFloat,
