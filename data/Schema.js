@@ -209,9 +209,9 @@ const Query = new GraphQLObjectType({
       resolve(obj, args) {
         if (args.id) {
           return knex('account').where({ id: args.id }).first();
-        } else if (args.email) {
-          return knex('account').where({ email: args.email }).first();
         }
+
+        return knex('account').where({ email: args.email }).first();
       },
     },
     accounts: {
