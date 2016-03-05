@@ -8,13 +8,16 @@
  */
 import fs from 'fs';
 import path from 'path';
-import { Schema } from '../data/schema';
 import { graphql } from 'graphql';
 import { introspectionQuery, printSchema } from 'graphql/utilities';
+
+import { Schema } from '../data/schema';
+import knex from '../data/dbConnection';
 
 // Save JSON of full schema introspection for Babel Relay Plugin to use
 (async () => {
   const result = await (graphql(Schema, introspectionQuery));
+  knex.destroy();
   if (result.errors) {
     console.error(
       'ERROR introspecting schema: ',
