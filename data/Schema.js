@@ -160,13 +160,18 @@ const Account = new GraphQLObjectType({
       description: 'Email address of account',
       type: GraphQLString,
     },
+    profile_pic_url: {
+      description: 'Profile pic url',
+      type: GraphQLString,
+    },
     workouts: {
       type: WorkoutConnection,
       args: connectionArgs,
-      resolve: (account, args) => connectionFromPromisedArray(
+      resolve: (account, args) =>
+        connectionFromPromisedArray(
           knex('workout').where({ userid: account.id }),
-          args
-          ),
+          args,
+        ),
     },
   }),
   interfaces: [nodeInterface],

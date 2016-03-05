@@ -12,7 +12,8 @@ CREATE TABLE Account (
 	id serial primary key,
 	name VARCHAR(255),
 	email VARCHAR(100),
-	password VARCHAR(40)
+	password VARCHAR(40),
+  profile_pic_url VARCHAR(100)
 );
 
 CREATE TABLE Workout
@@ -37,10 +38,10 @@ CREATE TABLE Lift
 	FOREIGN KEY(workoutId) REFERENCES Workout(id)
 );
 
-INSERT INTO Account(name, email, password)
+INSERT INTO Account(name, email, password, profile_pic_url)
 VALUES
-('jdivock', 'jdivock@jdivock.com', 'asdf'),
-('tpip', 'tpip@jdivock.com', 'asdf');
+('jdivock', 'jdivock@jdivock.com', 'asdf', 'http://www.gravatar.com/avatar/7185c88617c1a8f06add08209fbb9173.jpg'),
+('tpip', 'tpip@jdivock.com', 'asdf', null);
 
 INSERT INTO Workout(date, name, userId)
 VALUES

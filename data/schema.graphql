@@ -2,6 +2,7 @@ type Account implements Node {
   id: ID!
   name: String
   email: String
+  profile_pic_url: String
   workouts(after: String, first: Int, before: String, last: Int): WorkoutConnection
 }
 
