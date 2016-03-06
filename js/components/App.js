@@ -1,26 +1,21 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import Relay from 'react-relay';
 import { AppBar, Avatar } from 'material-ui';
 
-class Account extends Component {
-  render() {
-    const {
-      name,
-      email,
-      profile_pic_url,
-    } = this.props.account;
+const Account = ({ account }) => {
+  const {
+    profile_pic_url,
+  } = account;
 
-    return (
-      <div>
-        <AppBar
-          title={'LiftQL'}
-          iconElementRight={ <Avatar src={profile_pic_url}/> }
-        >
-        </AppBar>
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <AppBar
+        title={'LiftQL'}
+        iconElementRight={ <Avatar src={profile_pic_url} /> }
+      />
+    </div>
+  );
+};
 
 Account.propTypes = {
   account: PropTypes.object,
@@ -32,9 +27,6 @@ export default Relay.createContainer(Account, {
   fragments: {
     account: () => Relay.QL`
       fragment on Account {
-        id,
-        name,
-        email,
         profile_pic_url,
       }
     `,
