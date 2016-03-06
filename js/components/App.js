@@ -11,7 +11,12 @@ const App = (props) => {
       <TopNav
         account={account}
       />
-      { account.workouts.edges.map(edge => <Workout workout={ edge.node } />)}
+      {
+        account.workouts.edges.map(
+          edge =>
+            <Workout workout={ edge.node } />
+        )
+      }
     </div>
   );
 };

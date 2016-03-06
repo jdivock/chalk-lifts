@@ -119,7 +119,7 @@ const Workout = new GraphQLObjectType({
     id: globalIdField('Workout'),
     date: {
       description: 'Date of the workout',
-      type: GraphQLInt,
+      type: GraphQLString,
     },
     name: {
       description: 'Name of the Workout',

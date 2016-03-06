@@ -1,15 +1,23 @@
 import React, { PropTypes } from 'react';
 import Relay from 'react-relay';
+import moment from 'moment';
 import { Card, CardHeader, CardText } from 'material-ui';
+
+import Lift from './Lift';
 
 const Workout = ({ workout }) =>
   <Card>
     <CardHeader
-      title={ workout.date || 'Test Date' }
+      title={ moment(workout.date).format('L') }
       subtitle={ workout.name }
     />
-    <CardText>
-      Lift info here
+    <CardText style={{ display: 'flex' }}>
+    {
+      workout.lifts.edges.map(
+        edge =>
+          <Lift lift={ edge.node } />
+      )
+    }
     </CardText>
   </Card>;
 
@@ -22,7 +30,14 @@ export default Relay.createContainer(Workout, {
     workout: () => Relay.QL`
       fragment on Workout {
         name,
-        date
+        date,
+        lifts(first:10) {
+          edges {
+            node {
+              ${Lift.getFragment('lift')}
+            }
+          }
+        }
       }
     `,
   },
