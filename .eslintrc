@@ -2,4 +2,4 @@ parser: "babel-eslint"
 extends: "airbnb"
 
 rules:
-  camelcase: false
+  camelcase: 0
