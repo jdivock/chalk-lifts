@@ -11,7 +11,6 @@ const TopNav = ({ account }) =>
   </div>;
 
 TopNav.propTypes = {
-  profile_pic_url: PropTypes.string,
   account: PropTypes.object,
 };
 
