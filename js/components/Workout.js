@@ -11,7 +11,7 @@ const styles = {
     alignSelf: 'flex-end',
     border: '1px dashed',
     borderColor: grey500,
-    cusor: 'pointer',
+    cursor: 'pointer',
     marginLeft: 5,
   },
   lift: {
