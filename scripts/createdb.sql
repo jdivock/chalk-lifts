@@ -22,20 +22,20 @@ CREATE TABLE Workout
 	date timestamp default current_timestamp,
 	name VARCHAR(100),
 	comments VARCHAR(500),
-	userId INTEGER,
-	FOREIGN KEY(userId) REFERENCES Account(id)
+	user_id INTEGER,
+	FOREIGN KEY(user_id) REFERENCES Account(id)
 );
 
 CREATE TABLE Lift
 (
 	id serial PRIMARY KEY,
-	workoutId INTEGER,
+	workout_id INTEGER,
 	name VARCHAR(100),
 	reps INTEGER,
 	sets INTEGER,
 	weight INTEGER,
 	comments VARCHAR(500),
-	FOREIGN KEY(workoutId) REFERENCES Workout(id)
+	FOREIGN KEY(workout_id) REFERENCES Workout(id)
 );
 
 INSERT INTO Account(name, email, password, profile_pic_url)
@@ -43,7 +43,7 @@ VALUES
 ('jdivock', 'jdivock@jdivock.com', 'asdf', 'http://www.gravatar.com/avatar/7185c88617c1a8f06add08209fbb9173.jpg'),
 ('tpip', 'tpip@jdivock.com', 'asdf', null);
 
-INSERT INTO Workout(date, name, userId)
+INSERT INTO Workout(date, name, user_id)
 VALUES
 ('2015-01-08 04:05:06', 'Squat day', 1),
 ('2015-01-18 04:05:06', 'Deadlift day', 1),
@@ -54,7 +54,7 @@ VALUES
 ('2015-04-08 04:05:06', 'Front Squat day', 2),
 ('2015-06-08 04:05:06', 'Upper Acc. day', 2);
 
-INSERT INTO Lift(workoutId, name, reps, sets, weight)
+INSERT INTO Lift(workout_id, name, reps, sets, weight)
 VALUES
 (1, 'Squat', 5, 3, 315),
 (1, 'Paused HB Squat', 8, 3, 225),
@@ -67,4 +67,12 @@ VALUES
 (3, 'Front Squat', 5, 3, 315),
 (3, 'Heavy Front Squat', 8, 3, 225),
 (3, 'BB Rows', 8, 3, 135),
-(3, 'Shrugs', 10, 3, 0);
+(3, 'Shrugs', 10, 3, 0),
+(4, 'Squat', 5, 3, 315),
+(4, 'Paused HB Squat', 8, 3, 225),
+(4, 'Good Mornings', 8, 3, 135),
+(4, 'Situps', 10, 3, 0),
+(5, 'Deadlift', 5, 3, 315),
+(5, 'Deficit Deadlift', 8, 3, 225),
+(5, 'Deficit Straight Leg Deadlift', 8, 3, 135),
+(5, 'GHR', 10, 3, 0);

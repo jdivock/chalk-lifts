@@ -14,7 +14,10 @@ const App = (props) => {
       {
         account.workouts.edges.map(
           edge =>
-            <Workout workout={ edge.node } />
+            <Workout
+              workout={edge.node}
+              key={edge.node.id}
+            />
         )
       }
     </div>
@@ -33,6 +36,7 @@ export default Relay.createContainer(App, {
         workouts(first: 10) {
           edges {
             node {
+              id,
               ${Workout.getFragment('workout')}
             }
           }

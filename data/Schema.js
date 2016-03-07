@@ -55,11 +55,11 @@ const { nodeInterface, nodeField } = nodeDefinitions(
     (obj) => {
       // This is super hacky, might need bookshelf or a way
       // to define types to decent what the obj is
-      if (obj.workoutId) {
+      if (obj.workout_id) {
         return Lift;
       } else if (obj.email) {
         return Account;
-      } else if (obj.accountId) {
+      } else if (obj.account_id) {
         return Workout;
       }
 
@@ -94,7 +94,7 @@ const Lift = new GraphQLObjectType({
       description: 'Lift Comments',
       type: GraphQLString,
     },
-    workoutid: {
+    workout_id: {
       description: 'Identifier of workout lift pertains to',
       type: GraphQLID,
     },
@@ -102,9 +102,11 @@ const Lift = new GraphQLObjectType({
       type: WorkoutConnection,
       args: connectionArgs,
       resolve: (lift, args) => connectionFromPromisedArray(
-          knex('workout').where({ id: lift.workoutid }),
-          args
-          ),
+        knex('workout')
+          .where({ id: lift.workout_id })
+          .orderBy('date', 'desc'),
+        args,
+      ),
     },
   }),
   interfaces: [nodeInterface],
@@ -133,14 +135,14 @@ const Workout = new GraphQLObjectType({
       description: 'Account that the workout is tied to',
       type: Account,
       resolve(obj) {
-        return knex('account').where({ id: obj.userid }).first();
+        return knex('account').where({ id: obj.user_id }).first();
       },
     },
     lifts: {
       type: LiftConnection,
       args: connectionArgs,
       resolve: (workout, args) => connectionFromPromisedArray(
-          knex('lift').where({ workoutid: workout.id }),
+          knex('lift').where({ workout_id: workout.id }),
           args
           ),
     },
@@ -169,7 +171,9 @@ const Account = new GraphQLObjectType({
       args: connectionArgs,
       resolve: (account, args) =>
         connectionFromPromisedArray(
-          knex('workout').where({ userid: account.id }),
+          knex('workout')
+            .where({ user_id: account.id })
+            .orderBy('date', 'desc'),
           args,
         ),
     },
@@ -260,7 +264,7 @@ const Query = new GraphQLObjectType({
 const AddLiftMutation = mutationWithClientMutationId({
   name: 'AddLiftMutation',
   inputFields: {
-    workoutid: {
+    workout_id: {
       type: new GraphQLNonNull(GraphQLID),
       description: 'Workout identifier',
     },
@@ -294,11 +298,11 @@ const AddLiftMutation = mutationWithClientMutationId({
       },
     },
   },
-  mutateAndGetPayload: ({ workoutid, sets, reps, name, weight }) => {
-    const localWorkoutId = fromGlobalId(workoutid).id;
+  mutateAndGetPayload: ({ workout_id, sets, reps, name, weight }) => {
+    const localWorkoutId = fromGlobalId(workout_id).id;
 
     const liftEntry = {
-      workoutid: localWorkoutId,
+      workout_id: localWorkoutId,
       name,
       reps,
       sets,

@@ -2,6 +2,15 @@ import React, { PropTypes } from 'react';
 import Relay from 'react-relay';
 import { Card, CardHeader, CardText } from 'material-ui';
 
+const styles = {
+  card: {
+    margin: '0 7px',
+  },
+  cardHeader: {
+    height: 30,
+  },
+};
+
 const Lift = ({ lift }) => {
   let weight;
   if (lift.weight) {
@@ -11,9 +20,9 @@ const Lift = ({ lift }) => {
   }
 
   return (
-    <Card style={{ marginLeft: 10, marginRight: 10 }}>
+    <Card style={styles.card}>
       <CardHeader
-        style={{ height: 30 }}
+        style={styles.cardHeader}
         title={lift.name}
       />
       <CardText>

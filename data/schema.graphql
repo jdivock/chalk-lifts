@@ -7,7 +7,7 @@ type Account implements Node {
 }
 
 input AddLiftMutationInput {
-  workoutid: ID!
+  workout_id: ID!
   name: String!
   reps: Int!
   sets: Int!
@@ -27,7 +27,7 @@ type Lift implements Node {
   weight: Float
   name: String
   comments: String
-  workoutid: ID
+  workout_id: ID
   workout(after: String, first: Int, before: String, last: Int): WorkoutConnection
 }
 
@@ -66,7 +66,7 @@ type Query {
 
 type Workout implements Node {
   id: ID!
-  date: Int
+  date: String
   name: String
   comments: String
   account: Account

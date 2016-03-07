@@ -417,7 +417,7 @@
               "deprecationReason": null
             },
             {
-              "name": "workoutid",
+              "name": "workout_id",
               "description": "Identifier of workout lift pertains to",
               "args": [],
               "type": {
@@ -699,7 +699,7 @@
               "args": [],
               "type": {
                 "kind": "SCALAR",
-                "name": "Int",
+                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -933,7 +933,7 @@
           "fields": null,
           "inputFields": [
             {
-              "name": "workoutid",
+              "name": "workout_id",
               "description": "Workout identifier",
               "type": {
                 "kind": "NON_NULL",

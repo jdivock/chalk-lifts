@@ -35,12 +35,14 @@ const compiler = webpack({
   },
   output: { filename: 'app.js', path: '/' },
 });
+
 const app = new WebpackDevServer(compiler, {
   contentBase: '/public/',
   proxy: { '/graphql': `http://localhost:${GRAPHQL_PORT}` },
   publicPath: '/js/',
   stats: { colors: true },
 });
+
 // Serve static resources
 app.use('/', express.static(path.resolve(__dirname, 'public')));
 app.listen(APP_PORT, () => {
