@@ -11,9 +11,9 @@ const styles = {
   },
 };
 
-const Lift = ({ lift }) => {
+const Lift = ({ lift = {} }) => {
   let weight;
-  if (lift.weight) {
+  if (lift && lift.weight) {
     weight = `${lift.weight} x `;
   } else {
     weight = '';
@@ -35,6 +35,8 @@ const Lift = ({ lift }) => {
 Lift.propTypes = {
   lift: PropTypes.object,
 };
+
+export { Lift };
 
 export default Relay.createContainer(Lift, {
   fragments: {

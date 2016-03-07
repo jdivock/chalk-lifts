@@ -316,49 +316,6 @@ const AddLiftMutation = mutationWithClientMutationId({
       .insert(liftEntry);
   },
 });
-// fields: {
-//   addLift: {
-//     description: 'Add a lift to an existing workout',
-//     type: Lift,
-//     args: {
-//       workoutid: {
-//         type: new GraphQLNonNull(GraphQLID),
-//         description: 'Workout identifier'
-//       },
-//       name: {
-//         type: new GraphQLNonNull(GraphQLString),
-//         description: 'Workout name'
-//       },
-//       reps: {
-//         type: new GraphQLNonNull(GraphQLInt),
-//         description: 'Bro reps',
-//       },
-//       sets: {
-//         type: new GraphQLNonNull(GraphQLInt),
-//         description: 'Bro sets',
-//       },
-//       weight: {
-//         type: new GraphQLNonNull(GraphQLFloat),
-//         description: 'Bro weight',
-//       },
-//     },
-//     resolve(obj, args) {
-//       var liftEntry = {
-//         workoutid: args.workoutid,
-//         name: args.name,
-//         reps: args.reps,
-//         sets: args.sets,
-//         weight: args.weight,
-//       };
-//
-//       return knex('lift')
-//         .returning('id')
-//         .insert(liftEntry).then(function (id) {
-//           return Object.assign(liftEntry, {id: id});
-//         });
-//     }
-//   },
-// },
 
 const mutationType = new GraphQLObjectType({
   name: 'Mutation',
