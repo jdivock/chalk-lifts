@@ -1,12 +1,9 @@
-import knex from 'knex';
-import { CONN_STRING } from './config';
-import deb from 'debug';
+import knexLib from 'knex';
+import config from '../knexfile';
 
-const debug = deb('dbConnection.js');
+const env = 'development';
+const knex = knexLib(config[env]);
 
-debug(CONN_STRING);
+module.exports = knex;
 
-export default knex({
-  client: 'pg',
-  connection: CONN_STRING,
-});
+knex.migrate.latest([config]);
