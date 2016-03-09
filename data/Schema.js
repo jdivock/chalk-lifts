@@ -28,15 +28,15 @@ import {
 
 // Helpers, probably belong in their own js file eventually
 function getLift(id) {
-  return knex('lift').where({ id }).first();
+  return knex('lifts').where({ id }).first();
 }
 
 function getWorkout(id) {
-  return knex('workout').where({ id }).first();
+  return knex('workouts').where({ id }).first();
 }
 
-function getAccount(id) {
-  return knex('account').where({ id }).first();
+function getAccount(uid) {
+  return knex('users').where({ uid }).first();
 }
 
 const { nodeInterface, nodeField } = nodeDefinitions(
@@ -102,7 +102,7 @@ const Lift = new GraphQLObjectType({
       type: WorkoutConnection,
       args: connectionArgs,
       resolve: (lift, args) => connectionFromPromisedArray(
-        knex('workout')
+        knex('workouts')
           .where({ id: lift.workout_id })
           .orderBy('date', 'desc'),
         args,
@@ -135,14 +135,14 @@ const Workout = new GraphQLObjectType({
       description: 'Account that the workout is tied to',
       type: Account,
       resolve(obj) {
-        return knex('account').where({ id: obj.user_id }).first();
+        return knex('users').where({ uid: obj.user_id }).first();
       },
     },
     lifts: {
       type: LiftConnection,
       args: connectionArgs,
       resolve: (workout, args) => connectionFromPromisedArray(
-          knex('lift').where({ workout_id: workout.id }),
+          knex('lifts').where({ workout_id: workout.id }),
           args
           ),
     },
@@ -171,7 +171,7 @@ const Account = new GraphQLObjectType({
       args: connectionArgs,
       resolve: (account, args) =>
         connectionFromPromisedArray(
-          knex('workout')
+          knex('workouts')
             .where({ user_id: account.id })
             .orderBy('date', 'desc'),
           args,
@@ -217,10 +217,10 @@ const Query = new GraphQLObjectType({
       },
       resolve(obj, args) {
         if (args.id) {
-          return knex('account').where({ id: args.id }).first();
+          return knex('users').where({ uid: args.id }).first();
         }
 
-        return knex('account').where({ email: args.email }).first();
+        return knex('users').where({ email: args.email }).first();
       },
     },
     accounts: {
@@ -228,7 +228,7 @@ const Query = new GraphQLObjectType({
       type: new GraphQLList(Account),
       args: {},
       resolve() {
-        return knex('account');
+        return knex('users');
       },
     },
     workout: {
@@ -240,7 +240,7 @@ const Query = new GraphQLObjectType({
         },
       },
       resolve(obj, args) {
-        return knex('workout').where({ id: args.id }).first();
+        return knex('workouts').where({ id: args.id }).first();
       },
     },
     lift: {
@@ -252,7 +252,7 @@ const Query = new GraphQLObjectType({
         },
       },
       resolve(obj, args) {
-        return knex('lift').where({ id: args.id }).first();
+        return knex('lifts').where({ id: args.id }).first();
       },
     },
     node: nodeField,
@@ -311,7 +311,7 @@ const AddLiftMutation = mutationWithClientMutationId({
 
     debug(liftEntry);
 
-    return knex('lift')
+    return knex('lifts')
       .returning('id')
       .insert(liftEntry);
   },

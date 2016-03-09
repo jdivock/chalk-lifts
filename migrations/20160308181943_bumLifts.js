@@ -37,9 +37,9 @@ export const up = (knex, Promise) =>
 
 export const down = (knex, Promise) =>
   Promise.all([
-    knex.schema.dropTable('users'),
-    knex.schema.dropTable('workouts'),
     knex.schema.dropTable('lifts'),
+    knex.schema.dropTable('workouts'),
+    knex.schema.dropTable('users'),
   ]);
 
 export default { up, down };
