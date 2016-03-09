@@ -7,6 +7,9 @@ module.exports = {
   development: {
     client: 'pg',
     connection: CONN_STRING,
+    seeds: {
+      directory: './seeds/dev',
+    },
   },
 
   staging: {

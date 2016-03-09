@@ -15,8 +15,8 @@ export const up = (knex, Promise) =>
       table.string('name');
       table.text('comments');
       table.integer('user_id')
-      .references('uid')
-      .inTable('users');
+        .references('uid')
+        .inTable('users');
       table.timestamps();
     }),
 
