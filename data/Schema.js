@@ -59,7 +59,7 @@ const { nodeInterface, nodeField } = nodeDefinitions(
         return Lift;
       } else if (obj.email) {
         return Account;
-      } else if (obj.account_id) {
+      } else if (obj.uid) {
         return Workout;
       }
 
@@ -154,6 +154,10 @@ const Account = new GraphQLObjectType({
   name: 'Account',
   fields: () => ({
     id: globalIdField('Account'),
+    uid: {
+      description: 'User Id',
+      type: GraphQLID,
+    },
     name: {
       description: 'Name of user who holds the account',
       type: GraphQLString,
@@ -172,8 +176,8 @@ const Account = new GraphQLObjectType({
       resolve: (account, args) =>
         connectionFromPromisedArray(
           knex('workouts')
-            .where({ user_id: account.id })
-            .orderBy('date', 'desc'),
+            .where({ user_id: account.uid })
+            .orderBy('created_at', 'desc'),
           args,
         ),
     },

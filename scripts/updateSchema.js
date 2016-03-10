@@ -12,12 +12,12 @@ import { graphql } from 'graphql';
 import { introspectionQuery, printSchema } from 'graphql/utilities';
 
 import { Schema } from '../data/schema';
-import knex from '../data/dbConnection';
+// import knex from '../data/dbConnection';
 
 // Save JSON of full schema introspection for Babel Relay Plugin to use
 (async () => {
   const result = await (graphql(Schema, introspectionQuery));
-  knex.destroy();
+  // knex.destroy();
   if (result.errors) {
     console.error(
       'ERROR introspecting schema: ',

@@ -45,7 +45,7 @@
     "webpack-dev-server": "^1.14.1"
   },
   "scripts": {
-    "test": "eslint .",
+    "test": "eslint . && npm run update-schema",
     "start": "babel-node server.js",
     "dev": "nodemon server.js --exec babel-node",
     "update-schema": "babel-node ./scripts/updateSchema.js"

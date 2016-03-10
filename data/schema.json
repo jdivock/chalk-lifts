@@ -192,6 +192,18 @@
               "deprecationReason": null
             },
             {
+              "name": "uid",
+              "description": "User Id",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "name",
               "description": "Name of user who holds the account",
               "args": [],
