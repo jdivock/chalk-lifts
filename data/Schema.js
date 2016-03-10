@@ -3,7 +3,6 @@ import knex from './dbConnection';
 import deb from 'debug';
 
 const debug = deb('Schema.js');
-
 import {
   GraphQLFloat,
   GraphQLID,
@@ -332,3 +331,5 @@ export const Schema = new GraphQLSchema({
   query: Query,
   mutation: mutationType,
 });
+
+export default Schema;
