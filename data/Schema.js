@@ -3,6 +3,7 @@ import knex from './dbConnection';
 import deb from 'debug';
 
 const debug = deb('Schema.js');
+
 import {
   GraphQLFloat,
   GraphQLID,
@@ -120,6 +121,14 @@ const Workout = new GraphQLObjectType({
     id: globalIdField('Workout'),
     date: {
       description: 'Date of the workout',
+      type: GraphQLString,
+    },
+    created_at: {
+      description: 'Date workout was created on',
+      type: GraphQLString,
+    },
+    updated_at: {
+      description: 'Date workout was last updated on',
       type: GraphQLString,
     },
     name: {

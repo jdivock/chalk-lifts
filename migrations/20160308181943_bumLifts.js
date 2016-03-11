@@ -13,6 +13,7 @@ export const up = (knex, Promise) =>
     knex.schema.createTable('workouts', (table) => {
       table.increments('id').primary();
       table.string('name');
+      table.datetime('date');
       table.text('comments');
       table.integer('user_id')
         .references('uid')

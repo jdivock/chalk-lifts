@@ -68,6 +68,8 @@ type Query {
 type Workout implements Node {
   id: ID!
   date: String
+  created_at: String
+  updated_at: String
   name: String
   comments: String
   account: Account

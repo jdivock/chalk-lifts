@@ -5,7 +5,7 @@ import path from 'path';
 import { graphql } from 'graphql';
 import { introspectionQuery, printSchema } from 'graphql/utilities';
 
-import { Schema } from '../data/schema';
+import { Schema } from '../data/Schema';
 
 // Save JSON of full schema introspection for Babel Relay Plugin to use
 (async () => {
@@ -28,7 +28,3 @@ fs.writeFileSync(
   path.join(__dirname, '../data/schema.graphql'),
   printSchema(Schema)
 );
-
-// Force exit due to lingering db connection
-// "least shitty" solution, tried to rewire it with no success
-process.exit(0);

@@ -197,3 +197,13 @@ mutation AddLiftMutation($input: AddLiftMutationInput!) {
   }
 }
 ```
+
+## DB (knex)
+
+Stil figuring out why, but if I'm tinkering and killing the servr during a seed or migration bad things can happy. in that case
+
+```sh
+knex migrate:rollback
+
+knex migrate:latest
+```

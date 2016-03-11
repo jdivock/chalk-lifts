@@ -1,12 +1,14 @@
 {
   "passPerPreset": true,
   "presets": [
+    {
+      "plugins": [
+        "./build/babelRelayPlugin",
+        "transform-object-rest-spread",
+      ]
+    },
     "react",
     "es2015",
     "stage-0"
-  ],
-  "plugins": [
-    "transform-object-rest-spread",
-    "./build/babelRelayPlugin",
   ]
 }
