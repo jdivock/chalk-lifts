@@ -2,15 +2,23 @@
 
 Yeah, writing this (again), using graphQL/Relay, let's see if I can actually get it working.
 
-It'd make a crapton more sense to just get this going with react native and parse or some precooked backend, but what would I learn then eh?
+## Setup
 
-## To load db
+### Prereqs
 
+* Postgres (may do sqllite for dev)
+
+### Setup
+
+```sh
+> npm install
+> npm start
 ```
-$ psql -f scripts/createdb.sql <user>
-```
 
-### Relay Queries
+Relay GraphIQL on http://localhost:8080
+App on http://localhost:3000
+
+## Relay Queries
 
 ##### Basic
 ```js

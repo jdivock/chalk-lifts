@@ -59,7 +59,7 @@ const { nodeInterface, nodeField } = nodeDefinitions(
         return Lift;
       } else if (obj.email) {
         return Account;
-      } else if (obj.uid) {
+      } else if (obj.user_id) {
         return Workout;
       }
 
