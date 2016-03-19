@@ -39,14 +39,15 @@ function getUser(id, knex) {
 }
 
 const { nodeInterface, nodeField } = nodeDefinitions(
-    (globalId) => {
+    (globalId, { rootValue }) => {
       const { type, id } = fromGlobalId(globalId);
+      debug(fromGlobalId(globalId));
       if (type === 'Lift') {
-        return getLift(id);
+        return getLift(id, rootValue.knex);
       } else if (type === 'User') {
-        return getUser(id);
+        return getUser(id, rootValue.knex);
       } else if (type === 'Workout') {
-        return getWorkout(id);
+        return getWorkout(id, rootValue.knex);
       }
 
       return null;
