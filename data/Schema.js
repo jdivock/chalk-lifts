@@ -2,7 +2,11 @@
 import knex from './dbConnection';
 import deb from 'debug';
 
-const debug = deb('Schema.js');
+import User from './User';
+import Workout from './Workout';
+import Lift from './Lift';
+
+import { nodeField } from './NodeInterface';
 
 import {
   GraphQLFloat,
@@ -16,214 +20,32 @@ import {
 } from 'graphql';
 
 import {
-  connectionArgs,
-  connectionDefinitions,
-  connectionFromPromisedArray,
   fromGlobalId,
-  globalIdField,
   mutationWithClientMutationId,
-  nodeDefinitions,
 } from 'graphql-relay';
 
+const debug = deb('Schema.js');
 
-// Helpers, probably belong in their own js file eventually
 function getLift(id) {
   return knex('lifts').where({ id }).first();
 }
 
-function getWorkout(id) {
-  return knex('workouts').where({ id }).first();
-}
-
-function getAccount(uid) {
-  return knex('users').where({ uid }).first();
-}
-
-const { nodeInterface, nodeField } = nodeDefinitions(
-    (globalId) => {
-      const { type, id } = fromGlobalId(globalId);
-      if (type === 'Lift') {
-        return getLift(id);
-      } else if (type === 'Account') {
-        return getAccount(id);
-      } else if (type === 'Workout') {
-        return getWorkout(id);
-      }
-
-      return null;
-    },
-    (obj) => {
-      // This is super hacky, might need bookshelf or a way
-      // to define types to decent what the obj is
-      if (obj.workout_id) {
-        return Lift;
-      } else if (obj.email) {
-        return Account;
-      } else if (obj.user_id) {
-        return Workout;
-      }
-
-      return null;
-    }
-);
-
-// OBJECTS
-
-const Lift = new GraphQLObjectType({
-  description: 'Records of lifts recorded',
-  name: 'Lift',
-  fields: () => ({
-    id: globalIdField('Lift'),
-    reps: {
-      description: 'Bro Reps',
-      type: GraphQLInt,
-    },
-    sets: {
-      description: 'Bro Sets',
-      type: GraphQLInt,
-    },
-    weight: {
-      description: 'Bro Weight',
-      type: GraphQLFloat,
-    },
-    name: {
-      description: 'Lift Name',
-      type: GraphQLString,
-    },
-    comments: {
-      description: 'Lift Comments',
-      type: GraphQLString,
-    },
-    workout_id: {
-      description: 'Identifier of workout lift pertains to',
-      type: GraphQLID,
-    },
-    workout: {
-      type: WorkoutConnection,
-      args: connectionArgs,
-      resolve: (lift, args) => connectionFromPromisedArray(
-        knex('workouts')
-          .where({ id: lift.workout_id })
-          .orderBy('date', 'desc'),
-        args,
-      ),
-    },
-  }),
-  interfaces: [nodeInterface],
-});
-
-
-const Workout = new GraphQLObjectType({
-  description: `Workout entry, consisting of individual lifts
-    done during workout`,
-  name: 'Workout',
-  fields: () => ({
-    id: globalIdField('Workout'),
-    date: {
-      description: 'Date of the workout',
-      type: GraphQLString,
-    },
-    created_at: {
-      description: 'Date workout was created on',
-      type: GraphQLString,
-    },
-    updated_at: {
-      description: 'Date workout was last updated on',
-      type: GraphQLString,
-    },
-    name: {
-      description: 'Name of the Workout',
-      type: GraphQLString,
-    },
-    comments: {
-      description: 'Lift Comments',
-      type: GraphQLString,
-    },
-    account: {
-      description: 'Account that the workout is tied to',
-      type: Account,
-      resolve(obj) {
-        return knex('users').where({ uid: obj.user_id }).first();
-      },
-    },
-    lifts: {
-      type: LiftConnection,
-      args: connectionArgs,
-      resolve: (workout, args) => connectionFromPromisedArray(
-          knex('lifts').where({ workout_id: workout.id }),
-          args
-          ),
-    },
-  }),
-  interfaces: [nodeInterface],
-});
-
-const Account = new GraphQLObjectType({
-  name: 'Account',
-  fields: () => ({
-    id: globalIdField('Account'),
-    uid: {
-      description: 'User Id',
-      type: GraphQLID,
-    },
-    name: {
-      description: 'Name of user who holds the account',
-      type: GraphQLString,
-    },
-    email: {
-      description: 'Email address of account',
-      type: GraphQLString,
-    },
-    profile_pic_url: {
-      description: 'Profile pic url',
-      type: GraphQLString,
-    },
-    workouts: {
-      type: WorkoutConnection,
-      args: connectionArgs,
-      resolve: (account, args) =>
-        connectionFromPromisedArray(
-          knex('workouts')
-            .where({ user_id: account.uid })
-            .orderBy('created_at', 'desc'),
-          args,
-        ),
-    },
-  }),
-  interfaces: [nodeInterface],
-});
-
-// Connections
-
-const {
-  connectionType: WorkoutConnection,
-} = connectionDefinitions({
-  name: 'Workout',
-  nodeType: Workout,
-});
-
-const {
-  connectionType: LiftConnection,
-} = connectionDefinitions({
-  name: 'Lift',
-  nodeType: Lift,
-});
 
 // QUERIES
 
 const Query = new GraphQLObjectType({
   name: 'Query',
   fields: () => ({
-    account: {
-      description: 'Query user accounts',
-      type: Account,
+    user: {
+      description: 'Query users',
+      type: User,
       args: {
         id: {
-          description: 'Account ID',
+          description: 'User ID',
           type: GraphQLID,
         },
         email: {
-          description: 'Email address of the account',
+          description: 'Email address of the user',
           type: GraphQLString,
         },
       },
@@ -235,9 +57,9 @@ const Query = new GraphQLObjectType({
         return knex('users').where({ email: args.email }).first();
       },
     },
-    accounts: {
-      description: 'List of accounts in the system',
-      type: new GraphQLList(Account),
+    users: {
+      description: 'List of users in the system',
+      type: new GraphQLList(User),
       args: {},
       resolve() {
         return knex('users');
