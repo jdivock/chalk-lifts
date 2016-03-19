@@ -1,8 +1,7 @@
-/* eslint no-use-before-define:0 */
-import knex from './dbConnection';
-import deb from 'debug';
+/* eslint no-use-before-define:0, new-cap: 0 */
+import Debug from 'debug';
 
-const debug = deb('Schema.js');
+const debug = Debug('QLifts:Schema.js');
 
 import {
   GraphQLFloat,
@@ -27,15 +26,15 @@ import {
 
 
 // Helpers, probably belong in their own js file eventually
-function getLift(id) {
+function getLift(id, knex) {
   return knex('lifts').where({ id }).first();
 }
 
-function getWorkout(id) {
+function getWorkout(id, knex) {
   return knex('workouts').where({ id }).first();
 }
 
-function getUser(id) {
+function getUser(id, knex) {
   return knex('users').where({ id }).first();
 }
 
@@ -101,8 +100,8 @@ const Lift = new GraphQLObjectType({
     workout: {
       type: WorkoutConnection,
       args: connectionArgs,
-      resolve: (lift, args) => connectionFromPromisedArray(
-        knex('workouts')
+      resolve: (lift, args, { rootValue }) => connectionFromPromisedArray(
+        rootValue.knex('workouts')
           .where({ id: lift.workout_id })
           .orderBy('date', 'desc'),
         args,
@@ -142,15 +141,15 @@ const Workout = new GraphQLObjectType({
     user: {
       description: 'User that the workout is tied to',
       type: User,
-      resolve(obj) {
-        return knex('users').where({ id: obj.user_id }).first();
+      resolve(obj, _, { rootValue }) {
+        return rootValue.knex('users').where({ id: obj.user_id }).first();
       },
     },
     lifts: {
       type: LiftConnection,
       args: connectionArgs,
-      resolve: (workout, args) => connectionFromPromisedArray(
-          knex('lifts').where({ workout_id: workout.id }),
+      resolve: (workout, args, { rootValue }) => connectionFromPromisedArray(
+          rootValue.knex('lifts').where({ workout_id: workout.id }),
           args
           ),
     },
@@ -177,9 +176,9 @@ const User = new GraphQLObjectType({
     workouts: {
       type: WorkoutConnection,
       args: connectionArgs,
-      resolve: (user, args) =>
+      resolve: (user, args, { rootValue }) =>
         connectionFromPromisedArray(
-          knex('workouts')
+          rootValue.knex('workouts')
             .where({ user_id: user.id })
             .orderBy('created_at', 'desc'),
           args,
@@ -223,7 +222,8 @@ const Query = new GraphQLObjectType({
           type: GraphQLString,
         },
       },
-      resolve(obj, args) {
+      resolve(obj, args, { rootValue }) {
+        const knex = rootValue.knex;
         if (args.id) {
           return knex('users').where({ id: args.id }).first();
         }
@@ -235,8 +235,8 @@ const Query = new GraphQLObjectType({
       description: 'List of users in the system',
       type: new GraphQLList(User),
       args: {},
-      resolve() {
-        return knex('users');
+      resolve(_, __, { rootValue }) {
+        return rootValue.knex('users');
       },
     },
     workout: {
@@ -247,8 +247,8 @@ const Query = new GraphQLObjectType({
           type: new GraphQLNonNull(GraphQLID),
         },
       },
-      resolve(obj, args) {
-        return knex('workouts').where({ id: args.id }).first();
+      resolve(obj, args, { rootValue }) {
+        return rootValue.knex('workouts').where({ id: args.id }).first();
       },
     },
     lift: {
@@ -259,8 +259,8 @@ const Query = new GraphQLObjectType({
           type: new GraphQLNonNull(GraphQLID),
         },
       },
-      resolve(obj, args) {
-        return knex('lifts').where({ id: args.id }).first();
+      resolve(obj, args, { rootValue }) {
+        return rootValue.knex('lifts').where({ id: args.id }).first();
       },
     },
     node: nodeField,
@@ -306,7 +306,7 @@ const AddLiftMutation = mutationWithClientMutationId({
       },
     },
   },
-  mutateAndGetPayload: ({ workout_id, sets, reps, name, weight }) => {
+  mutateAndGetPayload: ({ workout_id, sets, reps, name, weight }, _, { rootValue }) => {
     const localWorkoutId = fromGlobalId(workout_id).id;
 
     const liftEntry = {
@@ -317,9 +317,7 @@ const AddLiftMutation = mutationWithClientMutationId({
       weight,
     };
 
-    debug(liftEntry);
-
-    return knex('lifts')
+    return rootValue.knex('lifts')
       .returning('id')
       .insert(liftEntry);
   },
