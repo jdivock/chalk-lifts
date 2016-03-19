@@ -41,7 +41,6 @@ function getUser(id, knex) {
 const { nodeInterface, nodeField } = nodeDefinitions(
     (globalId, { rootValue }) => {
       const { type, id } = fromGlobalId(globalId);
-      debug(fromGlobalId(globalId));
       if (type === 'Lift') {
         return getLift(id, rootValue.knex);
       } else if (type === 'User') {
