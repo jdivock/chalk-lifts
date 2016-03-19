@@ -35,8 +35,8 @@ function getWorkout(id) {
   return knex('workouts').where({ id }).first();
 }
 
-function getUser(uid) {
-  return knex('users').where({ uid }).first();
+function getUser(id) {
+  return knex('users').where({ id }).first();
 }
 
 const { nodeInterface, nodeField } = nodeDefinitions(
@@ -143,7 +143,7 @@ const Workout = new GraphQLObjectType({
       description: 'User that the workout is tied to',
       type: User,
       resolve(obj) {
-        return knex('users').where({ uid: obj.user_id }).first();
+        return knex('users').where({ id: obj.user_id }).first();
       },
     },
     lifts: {
@@ -162,10 +162,6 @@ const User = new GraphQLObjectType({
   name: 'User',
   fields: () => ({
     id: globalIdField('User'),
-    uid: {
-      description: 'User Id',
-      type: GraphQLID,
-    },
     name: {
       description: 'Name of user who holds the user',
       type: GraphQLString,
@@ -184,7 +180,7 @@ const User = new GraphQLObjectType({
       resolve: (user, args) =>
         connectionFromPromisedArray(
           knex('workouts')
-            .where({ user_id: user.uid })
+            .where({ user_id: user.id })
             .orderBy('created_at', 'desc'),
           args,
         ),
@@ -229,7 +225,7 @@ const Query = new GraphQLObjectType({
       },
       resolve(obj, args) {
         if (args.id) {
-          return knex('users').where({ uid: args.id }).first();
+          return knex('users').where({ id: args.id }).first();
         }
 
         return knex('users').where({ email: args.email }).first();

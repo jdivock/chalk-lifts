@@ -6,5 +6,5 @@ const knex = knexLib(config[env]);
 
 module.exports = knex;
 
-knex.migrate.latest([config]);
-knex.seed.run([config]);
+// knex.migrate.latest([config]);
+// knex.seed.run([config]);

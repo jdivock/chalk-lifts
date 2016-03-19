@@ -17,7 +17,7 @@ Promise.join(
     updated_at: moment().format('LLL'),
     profile_pic_url: 'http://www.gravatar.com/avatar/7185c88617c1a8f06add08209fbb9173.jpg',
   })
-  .returning('uid')
+  .returning('id')
   .then(
     resp =>
     knex('workouts')

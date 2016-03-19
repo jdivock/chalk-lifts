@@ -1,7 +1,7 @@
 export const up = (knex, Promise) =>
   Promise.all([
     knex.schema.createTable('users', (table) => {
-      table.increments('uid').primary();
+      table.increments('id').primary();
       table.string('username');
       table.string('password');
       table.string('name');
@@ -16,7 +16,7 @@ export const up = (knex, Promise) =>
       table.datetime('date');
       table.text('comments');
       table.integer('user_id')
-        .references('uid')
+        .references('id')
         .inTable('users');
       table.timestamps();
     }),
@@ -28,7 +28,7 @@ export const up = (knex, Promise) =>
       table.integer('sets');
       table.decimal('weight');
       table.integer('user_id')
-        .references('uid')
+        .references('id')
         .inTable('users');
       table.integer('workout_id')
         .references('id')
