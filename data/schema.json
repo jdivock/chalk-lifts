@@ -15,12 +15,12 @@
           "description": null,
           "fields": [
             {
-              "name": "account",
-              "description": "Query user accounts",
+              "name": "user",
+              "description": "Query user users",
               "args": [
                 {
                   "name": "id",
-                  "description": "Account ID",
+                  "description": "User ID",
                   "type": {
                     "kind": "SCALAR",
                     "name": "ID",
@@ -30,7 +30,7 @@
                 },
                 {
                   "name": "email",
-                  "description": "Email address of the account",
+                  "description": "Email address of the user",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -41,22 +41,22 @@
               ],
               "type": {
                 "kind": "OBJECT",
-                "name": "Account",
+                "name": "User",
                 "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "accounts",
-              "description": "List of accounts in the system",
+              "name": "users",
+              "description": "List of users in the system",
               "args": [],
               "type": {
                 "kind": "LIST",
                 "name": null,
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "Account",
+                  "name": "User",
                   "ofType": null
                 }
               },
@@ -172,7 +172,7 @@
         },
         {
           "kind": "OBJECT",
-          "name": "Account",
+          "name": "User",
           "description": null,
           "fields": [
             {
@@ -192,20 +192,8 @@
               "deprecationReason": null
             },
             {
-              "name": "uid",
-              "description": "User Id",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "ID",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "name",
-              "description": "Name of user who holds the account",
+              "description": "Name of user who holds the user",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -217,7 +205,7 @@
             },
             {
               "name": "email",
-              "description": "Email address of account",
+              "description": "Email address of user",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -342,7 +330,7 @@
             },
             {
               "kind": "OBJECT",
-              "name": "Account",
+              "name": "User",
               "ofType": null
             }
           ]
@@ -766,12 +754,12 @@
               "deprecationReason": null
             },
             {
-              "name": "account",
-              "description": "Account that the workout is tied to",
+              "name": "user",
+              "description": "User that the workout is tied to",
               "args": [],
               "type": {
                 "kind": "OBJECT",
-                "name": "Account",
+                "name": "User",
                 "ofType": null
               },
               "isDeprecated": false,

@@ -4,15 +4,13 @@ import Relay from 'react-relay';
 import TopNav from './TopNav';
 import Workout from './Workout';
 
-const App = (props) => {
-  const account = props.account;
-  return (
+const App = ({ user }) =>
     <div>
       <TopNav
-        account={account}
+        user={user}
       />
       {
-        account.workouts.edges.map(
+        user.workouts.edges.map(
           edge =>
             <Workout
               workout={edge.node}
@@ -20,19 +18,17 @@ const App = (props) => {
             />
         )
       }
-    </div>
-  );
-};
+    </div>;
 
 App.propTypes = {
-  account: PropTypes.object,
+  user: PropTypes.object,
 };
 
 export default Relay.createContainer(App, {
   fragments: {
-    account: () => Relay.QL`
-      fragment on Account {
-        ${TopNav.getFragment('account')},
+    user: () => Relay.QL`
+      fragment on User {
+        ${TopNav.getFragment('user')},
         workouts(first: 10) {
           edges {
             node {

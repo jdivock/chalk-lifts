@@ -1,12 +1,3 @@
-type Account implements Node {
-  id: ID!
-  uid: ID
-  name: String
-  email: String
-  profile_pic_url: String
-  workouts(after: String, first: Int, before: String, last: Int): WorkoutConnection
-}
-
 input AddLiftMutationInput {
   workout_id: ID!
   name: String!
@@ -58,11 +49,19 @@ type PageInfo {
 }
 
 type Query {
-  account(id: ID, email: String): Account
-  accounts: [Account]
+  user(id: ID, email: String): User
+  users: [User]
   workout(id: ID!): Workout
   lift(id: ID!): Lift
   node(id: ID!): Node
+}
+
+type User implements Node {
+  id: ID!
+  name: String
+  email: String
+  profile_pic_url: String
+  workouts(after: String, first: Int, before: String, last: Int): WorkoutConnection
 }
 
 type Workout implements Node {
@@ -72,7 +71,7 @@ type Workout implements Node {
   updated_at: String
   name: String
   comments: String
-  account: Account
+  user: User
   lifts(after: String, first: Int, before: String, last: Int): LiftConnection
 }
 
