@@ -35,7 +35,7 @@ function getWorkout(id) {
   return knex('workouts').where({ id }).first();
 }
 
-function getAccount(uid) {
+function getUser(uid) {
   return knex('users').where({ uid }).first();
 }
 
@@ -44,8 +44,8 @@ const { nodeInterface, nodeField } = nodeDefinitions(
       const { type, id } = fromGlobalId(globalId);
       if (type === 'Lift') {
         return getLift(id);
-      } else if (type === 'Account') {
-        return getAccount(id);
+      } else if (type === 'User') {
+        return getUser(id);
       } else if (type === 'Workout') {
         return getWorkout(id);
       }
@@ -58,7 +58,7 @@ const { nodeInterface, nodeField } = nodeDefinitions(
       if (obj.workout_id) {
         return Lift;
       } else if (obj.email) {
-        return Account;
+        return User;
       } else if (obj.user_id) {
         return Workout;
       }
@@ -139,9 +139,9 @@ const Workout = new GraphQLObjectType({
       description: 'Lift Comments',
       type: GraphQLString,
     },
-    account: {
-      description: 'Account that the workout is tied to',
-      type: Account,
+    user: {
+      description: 'User that the workout is tied to',
+      type: User,
       resolve(obj) {
         return knex('users').where({ uid: obj.user_id }).first();
       },
@@ -158,20 +158,20 @@ const Workout = new GraphQLObjectType({
   interfaces: [nodeInterface],
 });
 
-const Account = new GraphQLObjectType({
-  name: 'Account',
+const User = new GraphQLObjectType({
+  name: 'User',
   fields: () => ({
-    id: globalIdField('Account'),
+    id: globalIdField('User'),
     uid: {
       description: 'User Id',
       type: GraphQLID,
     },
     name: {
-      description: 'Name of user who holds the account',
+      description: 'Name of user who holds the user',
       type: GraphQLString,
     },
     email: {
-      description: 'Email address of account',
+      description: 'Email address of user',
       type: GraphQLString,
     },
     profile_pic_url: {
@@ -181,10 +181,10 @@ const Account = new GraphQLObjectType({
     workouts: {
       type: WorkoutConnection,
       args: connectionArgs,
-      resolve: (account, args) =>
+      resolve: (user, args) =>
         connectionFromPromisedArray(
           knex('workouts')
-            .where({ user_id: account.uid })
+            .where({ user_id: user.uid })
             .orderBy('created_at', 'desc'),
           args,
         ),
@@ -214,16 +214,16 @@ const {
 const Query = new GraphQLObjectType({
   name: 'Query',
   fields: () => ({
-    account: {
-      description: 'Query user accounts',
-      type: Account,
+    user: {
+      description: 'Query user users',
+      type: User,
       args: {
         id: {
-          description: 'Account ID',
+          description: 'User ID',
           type: GraphQLID,
         },
         email: {
-          description: 'Email address of the account',
+          description: 'Email address of the user',
           type: GraphQLString,
         },
       },
@@ -235,9 +235,9 @@ const Query = new GraphQLObjectType({
         return knex('users').where({ email: args.email }).first();
       },
     },
-    accounts: {
-      description: 'List of accounts in the system',
-      type: new GraphQLList(Account),
+    users: {
+      description: 'List of users in the system',
+      type: new GraphQLList(User),
       args: {},
       resolve() {
         return knex('users');
