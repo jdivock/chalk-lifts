@@ -1,16 +1,19 @@
 import { User } from './bookshelf';
 
-export const getUser = (query) =>
-  new User(query)
+export const getUsers = () =>
+  new User()
+    .fetchAll()
+    .then(users => users.toJSON())
+    .catch(() => {});
+
+export const getUser = (id) =>
+  new User({ id })
     .fetch()
     .then(user => user.toJSON())
     .catch(() => {});
 
-export const getWorkoutsForUser = (id) =>
-  new User({ id })
-    .fetch({
-      withRelated: [
-        { workouts: (query) => query.orderBy('date', 'desc') },
-      ],
-    })
-    .then(user => user.related('workouts').toJSON());
+export const getUserByEmail = (email) =>
+  new User({ email })
+    .fetch()
+    .then(user => user.toJSON())
+    .catch(() => {});

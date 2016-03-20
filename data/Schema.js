@@ -1,8 +1,8 @@
 /* eslint no-use-before-define:0, new-cap: 0 */
 import Debug from 'debug';
-import { getUser, getWorkoutsForUser } from './User';
-import { getLiftById } from './Lift';
-import { getWorkout } from './Workout';
+import { getUser, getUserByEmail, getUsers } from './User';
+import { getLift, getLifts, addLift } from './Lift';
+import { getWorkout, getWorkouts } from './Workout';
 
 const debug = Debug('QLifts:Schema.js');
 
@@ -32,7 +32,7 @@ const { nodeInterface, nodeField } = nodeDefinitions(
     (globalId) => {
       const { type, id } = fromGlobalId(globalId);
       if (type === 'Lift') {
-        return getLiftById(id);
+        return getLift(id);
       } else if (type === 'User') {
         return getUser({ id });
       } else if (type === 'Workout') {
@@ -134,8 +134,8 @@ const Workout = new GraphQLObjectType({
     lifts: {
       type: LiftConnection,
       args: connectionArgs,
-      resolve: (workout, args, { rootValue }) => connectionFromPromisedArray(
-          rootValue.knex('lifts').where({ workout_id: workout.id }),
+      resolve: (workout, args) => connectionFromPromisedArray(
+          getLifts(workout.id),
           args
           ),
     },
@@ -164,7 +164,7 @@ const User = new GraphQLObjectType({
       args: connectionArgs,
       resolve: (user, args) =>
         connectionFromPromisedArray(
-          getWorkoutsForUser(user.id),
+          getWorkouts(user.id),
           args,
         ),
     },
@@ -209,18 +209,18 @@ const Query = new GraphQLObjectType({
       resolve(obj, { id, email }) {
         debug('fetching user');
         if (id) {
-          return getUser({ id });
+          return getUser(id);
         }
 
-        return getUser({ email });
+        return getUserByEmail(email);
       },
     },
     users: {
       description: 'List of users in the system',
       type: new GraphQLList(User),
       args: {},
-      resolve(_, __, { rootValue }) {
-        return rootValue.knex('users');
+      resolve() {
+        return getUsers();
       },
     },
     workout: {
@@ -231,8 +231,8 @@ const Query = new GraphQLObjectType({
           type: new GraphQLNonNull(GraphQLID),
         },
       },
-      resolve(obj, args, { rootValue }) {
-        return rootValue.knex('workouts').where({ id: args.id }).first();
+      resolve(_, args) {
+        return getWorkout(args.id);
       },
     },
     lift: {
@@ -243,8 +243,8 @@ const Query = new GraphQLObjectType({
           type: new GraphQLNonNull(GraphQLID),
         },
       },
-      resolve(obj, args, { rootValue }) {
-        return rootValue.knex('lifts').where({ id: args.id }).first();
+      resolve(_, args) {
+        return getLift(args.id);
       },
     },
     node: nodeField,
@@ -284,10 +284,10 @@ const AddLiftMutation = mutationWithClientMutationId({
       // ids, in this case just one, and the last member is the
       // clientMutationId which I have no clue what it does.
       // So this works for now but thar be dragons
-      resolve: (id) => getLiftById(id[0]),
+      resolve: (id) => getLift(id[0]),
     },
   },
-  mutateAndGetPayload: ({ workout_id, sets, reps, name, weight }, _, { rootValue }) => {
+  mutateAndGetPayload: ({ workout_id, sets, reps, name, weight }) => {
     const localWorkoutId = fromGlobalId(workout_id).id;
 
     const liftEntry = {
@@ -298,9 +298,7 @@ const AddLiftMutation = mutationWithClientMutationId({
       weight,
     };
 
-    return rootValue.knex('lifts')
-      .returning('id')
-      .insert(liftEntry);
+    return addLift(liftEntry);
   },
 });
 

@@ -7,7 +7,6 @@ import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 
 import { Schema } from './data/schema';
-import dbMiddleware from './dbMiddleware';
 
 const debug = Debug('QLifts:server.js');
 
@@ -21,15 +20,9 @@ const GRAPHQL_PORT = 8080;
 // Expose a GraphQL endpoint
 const graphQLServer = express();
 
-graphQLServer.use(dbMiddleware);
 graphQLServer.use('/', graphQLHTTP(({ User, Lift, Workout }) => ({
   graphiql: true,
   pretty: true,
-  rootValue: {
-    User,
-    Lift,
-    Workout,
-  },
   schema: Schema,
 })));
 
