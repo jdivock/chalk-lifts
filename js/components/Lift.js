@@ -38,8 +38,6 @@ Lift.propTypes = {
   lift: PropTypes.object,
 };
 
-export { Lift };
-
 export default Relay.createContainer(Lift, {
   fragments: {
     lift: () => Relay.QL`

@@ -1,19 +1,20 @@
 import React, { PropTypes } from 'react';
 import Relay from 'react-relay';
 import moment from 'moment';
-import { Set } from 'immutable';
-import { Card, CardHeader, CardText, FontIcon } from 'material-ui';
-import { grey500 } from 'material-ui/lib/styles/colors';
+import { Card, CardHeader, CardText } from 'material-ui';
+import Debug from 'debug';
 
-import RelayLift, { Lift } from './Lift';
-import LiftForm from './LiftForm';
+import Lift from './Lift';
+import AddLiftDialog from './AddLiftDialog';
+import SquareAddIcon from './icons/SquareAddIcon';
+
+Debug.enable('*');
+const debug = Debug('chalk-lifts:components/Workout');
+debug('Building component/Workout');
 
 const styles = {
   icon: {
     alignSelf: 'flex-end',
-    border: '1px dashed',
-    borderColor: grey500,
-    cursor: 'pointer',
     marginLeft: 5,
   },
   lift: {
@@ -29,24 +30,31 @@ class Workout extends React.Component {
     super(props);
 
     this.state = {
-      editMode: false,
-      newLifts: new Set(),
+      openLiftDialog: false,
     };
   }
 
   addLift = () => {
-    const key = `${this.state.newLifts.size + 1}_new`;
-
     this.setState({
-      newLifts: this.state.newLifts.add(
-        <Lift key={key} editMode />
-      ),
+      openLiftDialog: true,
+    });
+  }
+
+  closeLiftDialog = () => {
+    this.setState({
+      openLiftDialog: false,
     });
   }
 
   render() {
     const { workout } = this.props;
-    const { newLifts } = this.state;
+    const lifts = workout.lifts.edges.map(
+      edge =>
+        <Lift
+          lift={edge.node}
+          key={edge.node.id}
+        />
+    );
 
     return (
       <Card>
@@ -56,26 +64,16 @@ class Workout extends React.Component {
           style={styles.cardHeader}
         />
         <CardText style={styles.lift}>
-          {
-            workout.lifts.edges.map(
-              edge =>
-                <RelayLift
-                  lift={edge.node}
-                  key={edge.node.id}
-                />
-            )
-          }
-          <LiftForm />
-          { newLifts.map(newLift => newLift) }
-          <FontIcon
-            className="material-icons"
+          { lifts }
+          <SquareAddIcon
             style={styles.icon}
-            color={grey500}
             onClick={this.addLift}
-          >
-            add
-          </FontIcon>
+          />
         </CardText>
+        <AddLiftDialog
+          open={this.state.openLiftDialog}
+          handleClose={this.closeLiftDialog}
+        />
       </Card>
     );
   }
@@ -95,7 +93,7 @@ export default Relay.createContainer(Workout, {
           edges {
             node {
               id,
-              ${RelayLift.getFragment('lift')}
+              ${Lift.getFragment('lift')}
             }
           }
         }
