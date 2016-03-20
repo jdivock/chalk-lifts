@@ -1,4 +1,4 @@
-/* eslint no-console: 0 */
+/* eslint no-console: 0, no-unused-vars: 0 */
 import Debug from 'debug';
 import express from 'express';
 import graphQLHTTP from 'express-graphql';
@@ -7,11 +7,10 @@ import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 
 import { Schema } from './data/schema';
-import dbMiddleware from './dbMiddleware';
 
 const debug = Debug('QLifts:server.js');
 
-Debug.enable('*');
+Debug.enable('QLift*');
 
 debug('server starting');
 
@@ -21,11 +20,9 @@ const GRAPHQL_PORT = 8080;
 // Expose a GraphQL endpoint
 const graphQLServer = express();
 
-graphQLServer.use(dbMiddleware);
-graphQLServer.use('/', graphQLHTTP(request => ({
+graphQLServer.use('/', graphQLHTTP(({ User, Lift, Workout }) => ({
   graphiql: true,
   pretty: true,
-  rootValue: { knex: request.knex },
   schema: Schema,
 })));
 
