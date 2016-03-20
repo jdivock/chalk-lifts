@@ -6,6 +6,7 @@ import { Card, CardHeader, CardText, FontIcon } from 'material-ui';
 import { grey500 } from 'material-ui/lib/styles/colors';
 
 import RelayLift, { Lift } from './Lift';
+import LiftForm from './LiftForm';
 
 const styles = {
   icon: {
@@ -64,6 +65,7 @@ class Workout extends React.Component {
                 />
             )
           }
+          <LiftForm />
           { newLifts.map(newLift => newLift) }
           <FontIcon
             className="material-icons"

@@ -8,6 +8,8 @@ const styles = {
   },
   cardHeader: {
     height: 30,
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
   },
 };
 
