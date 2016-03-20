@@ -1,4 +1,4 @@
-/* eslint no-console: 0 */
+/* eslint no-console: 0, no-unused-vars: 0 */
 import Debug from 'debug';
 import express from 'express';
 import graphQLHTTP from 'express-graphql';
