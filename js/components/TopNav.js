@@ -5,7 +5,7 @@ import { AppBar, Avatar } from 'material-ui';
 const TopNav = ({ user }) =>
   <div>
     <AppBar
-      title={'LiftQL'}
+      title={'Chalk Lifts'}
       iconElementRight={ <Avatar src={user.profile_pic_url} /> }
     />
   </div>;

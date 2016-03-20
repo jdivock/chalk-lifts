@@ -8,9 +8,9 @@ import WebpackDevServer from 'webpack-dev-server';
 
 import { Schema } from './data/schema';
 
-const debug = Debug('QLifts:server.js');
+const debug = Debug('chalk-lifts:server.js');
 
-Debug.enable('QLift*');
+Debug.enable('chalk-lifts*');
 
 debug('server starting');
 
