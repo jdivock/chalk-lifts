@@ -1,5 +1,8 @@
 /* eslint no-use-before-define:0, new-cap: 0 */
 import Debug from 'debug';
+import { getUser, getWorkoutsForUser } from './User';
+import { getLiftById } from './Lift';
+import { getWorkout } from './Workout';
 
 const debug = Debug('QLifts:Schema.js');
 
@@ -25,28 +28,15 @@ import {
 } from 'graphql-relay';
 
 
-// Helpers, probably belong in their own js file eventually
-function getLift(id, knex) {
-  return knex('lifts').where({ id }).first();
-}
-
-function getWorkout(id, knex) {
-  return knex('workouts').where({ id }).first();
-}
-
-function getUser(id, knex) {
-  return knex('users').where({ id }).first();
-}
-
 const { nodeInterface, nodeField } = nodeDefinitions(
-    (globalId, { rootValue }) => {
+    (globalId) => {
       const { type, id } = fromGlobalId(globalId);
       if (type === 'Lift') {
-        return getLift(id, rootValue.knex);
+        return getLiftById(id);
       } else if (type === 'User') {
-        return getUser(id, rootValue.knex);
+        return getUser({ id });
       } else if (type === 'Workout') {
-        return getWorkout(id, rootValue.knex);
+        return getWorkout(id);
       }
 
       return null;
@@ -100,10 +90,8 @@ const Lift = new GraphQLObjectType({
     workout: {
       type: WorkoutConnection,
       args: connectionArgs,
-      resolve: (lift, args, { rootValue }) => connectionFromPromisedArray(
-        rootValue.knex('workouts')
-          .where({ id: lift.workout_id })
-          .orderBy('date', 'desc'),
+      resolve: (lift, args) => connectionFromPromisedArray(
+        getWorkout(lift.workout_id),
         args,
       ),
     },
@@ -141,9 +129,7 @@ const Workout = new GraphQLObjectType({
     user: {
       description: 'User that the workout is tied to',
       type: User,
-      resolve(obj, _, { rootValue }) {
-        return rootValue.knex('users').where({ id: obj.user_id }).first();
-      },
+      resolve: (obj) => getUser({ id: obj.user_id }),
     },
     lifts: {
       type: LiftConnection,
@@ -176,11 +162,9 @@ const User = new GraphQLObjectType({
     workouts: {
       type: WorkoutConnection,
       args: connectionArgs,
-      resolve: (user, args, { rootValue }) =>
+      resolve: (user, args) =>
         connectionFromPromisedArray(
-          rootValue.knex('workouts')
-            .where({ user_id: user.id })
-            .orderBy('created_at', 'desc'),
+          getWorkoutsForUser(user.id),
           args,
         ),
     },
@@ -222,13 +206,13 @@ const Query = new GraphQLObjectType({
           type: GraphQLString,
         },
       },
-      resolve(obj, args, { rootValue }) {
-        const knex = rootValue.knex;
-        if (args.id) {
-          return knex('users').where({ id: args.id }).first();
+      resolve(obj, { id, email }) {
+        debug('fetching user');
+        if (id) {
+          return getUser({ id });
         }
 
-        return knex('users').where({ email: args.email }).first();
+        return getUser({ email });
       },
     },
     users: {
@@ -296,14 +280,11 @@ const AddLiftMutation = mutationWithClientMutationId({
   outputFields: {
     newLift: {
       type: Lift,
-      resolve: (id) => {
-        // Some weird danger here, postgres returns an array of inserted
-        // ids, in this case just one, and the last member is the
-        // clientMutationId which I have no clue what it does.
-        // So this works for now but thar be dragons
-        debug('returned id', id);
-        return getLift(id[0]);
-      },
+      // Some weird danger here, postgres returns an array of inserted
+      // ids, in this case just one, and the last member is the
+      // clientMutationId which I have no clue what it does.
+      // So this works for now but thar be dragons
+      resolve: (id) => getLiftById(id[0]),
     },
   },
   mutateAndGetPayload: ({ workout_id, sets, reps, name, weight }, _, { rootValue }) => {
