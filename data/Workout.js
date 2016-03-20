@@ -12,7 +12,8 @@ export const getWorkout = (id) =>
     .catch(() => {});
 
 export const getWorkouts = (user_id) =>
-  new Workout({ user_id })
+  new Workout()
+    .where({ user_id })
     .query(q => q.orderBy('date', 'desc'))
     .fetchAll()
     .then(workouts => workouts.toJSON())

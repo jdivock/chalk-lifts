@@ -34,7 +34,7 @@ const { nodeInterface, nodeField } = nodeDefinitions(
       if (type === 'Lift') {
         return getLift(id);
       } else if (type === 'User') {
-        return getUser({ id });
+        return getUser(id);
       } else if (type === 'Workout') {
         return getWorkout(id);
       }
@@ -87,14 +87,6 @@ const Lift = new GraphQLObjectType({
       description: 'Identifier of workout lift pertains to',
       type: GraphQLID,
     },
-    workout: {
-      type: WorkoutConnection,
-      args: connectionArgs,
-      resolve: (lift, args) => connectionFromPromisedArray(
-        getWorkout(lift.workout_id),
-        args,
-      ),
-    },
   }),
   interfaces: [nodeInterface],
 });
@@ -125,11 +117,6 @@ const Workout = new GraphQLObjectType({
     comments: {
       description: 'Lift Comments',
       type: GraphQLString,
-    },
-    user: {
-      description: 'User that the workout is tied to',
-      type: User,
-      resolve: (obj) => getUser({ id: obj.user_id }),
     },
     lifts: {
       type: LiftConnection,

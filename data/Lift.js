@@ -1,4 +1,9 @@
+import Debug from 'debug';
 import { Lift } from './bookshelf';
+
+const debug = Debug('QLifts:data/Lift.js');
+
+debug('instantiating Lift model');
 
 export const getLift = (id) =>
   new Lift({ id })
@@ -7,8 +12,8 @@ export const getLift = (id) =>
     .catch(() => {});
 
 export const getLifts = (workout_id) =>
-  new Lift({ workout_id })
-    .query(q => q.orderBy('date', 'desc'))
+  new Lift()
+    .where({ workout_id })
     .fetchAll()
     .then(lifts => lifts.toJSON())
     .catch(() => []);
