@@ -1,7 +1,7 @@
 import { Workout } from './bookshelf';
 import Debug from 'debug';
 
-const debug = Debug('QLifts:data/Workout.js');
+const debug = Debug('chalk-lifts:data/Workout.js');
 
 debug('instantiating workout model');
 

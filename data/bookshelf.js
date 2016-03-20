@@ -3,9 +3,12 @@ import config from '../knexfile';
 import Bookshelf from 'bookshelf';
 import Debug from 'debug';
 
-const debug = Debug('QLifts:bookshelf');
 const env = 'development';
+const debug = Debug('chalk-lifts:bookshelf');
 const knex = Knex(config[env]);
+
+// knex.migrate.latest([config]);
+// knex.seed.run([config]);
 
 const bookshelf = Bookshelf(knex);
 
@@ -24,7 +27,3 @@ export const User = bookshelf.Model.extend({
   tableName: 'users',
   workouts: function workouts() { return this.hasMany(Workout); },
 });
-
-
-// knex.migrate.latest([config]);
-// knex.seed.run([config]);

@@ -1,5 +1,5 @@
 {
-  "name": "lift-graphql",
+  "name": "chalk-lifts",
   "version": "0.0.1",
   "description": "Relay/GraphQL lift tracker",
   "main": "server.js",
@@ -52,7 +52,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jdivock/lift-graphql.git"
+    "url": "git+https://github.com/jdivock/chalk-lifts.git"
   },
   "keywords": [
     "graphql",
@@ -64,7 +64,7 @@
   "author": "Jason Divock",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jdivock/lift-graphql/issues"
+    "url": "https://github.com/jdivock/chalk-lifts/issues"
   },
-  "homepage": "https://github.com/jdivock/lift-graphql#readme"
+  "homepage": "https://github.com/jdivock/chalk-lifts#readme"
 }

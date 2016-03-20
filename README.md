@@ -1,4 +1,4 @@
-# Lift-GraphQL [![Build Status](https://travis-ci.org/jdivock/lift-graphql.svg?branch=master)](https://travis-ci.org/jdivock/lift-graphql)
+# Chalk Lifts [![Build Status](https://travis-ci.org/jdivock/chalk-lifts.svg?branch=master)](https://travis-ci.org/jdivock/chalk-lifts)
 
 Yeah, writing this (again), using graphQL/Relay, let's see if I can actually get it working.
 

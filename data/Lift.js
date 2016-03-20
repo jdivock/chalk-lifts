@@ -1,7 +1,7 @@
 import Debug from 'debug';
 import { Lift } from './bookshelf';
 
-const debug = Debug('QLifts:data/Lift.js');
+const debug = Debug('chalk-lifts:data/Lift.js');
 
 debug('instantiating Lift model');
 

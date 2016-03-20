@@ -4,7 +4,7 @@ import { getUser, getUserByEmail, getUsers } from './User';
 import { getLift, getLifts, addLift } from './Lift';
 import { getWorkout, getWorkouts } from './Workout';
 
-const debug = Debug('QLifts:Schema.js');
+const debug = Debug('chalk-lifts:Schema.js');
 
 import {
   GraphQLFloat,
