@@ -1,0 +1,1 @@
+export SquareAddIcon from './SquareAddIcon';
