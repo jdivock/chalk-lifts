@@ -170,6 +170,7 @@ const {
 
 const {
   connectionType: LiftConnection,
+  edgeType: GraphQLLiftEdge,
 } = connectionDefinitions({
   name: 'Lift',
   nodeType: Lift,
@@ -265,13 +266,13 @@ const AddLiftMutation = mutationWithClientMutationId({
     },
   },
   outputFields: {
-    newLift: {
+    liftEdge: {
       type: Lift,
       // Some weird danger here, postgres returns an array of inserted
       // ids, in this case just one, and the last member is the
       // clientMutationId which I have no clue what it does.
       // So this works for now but thar be dragons
-      resolve: (id) => getLift(id[0]),
+      resolve: (lift) => { debug(`derpin: ${lift.toJSON()}`); return lift.toJSON(); },
     },
   },
   mutateAndGetPayload: ({ workout_id, sets, reps, name, weight }) => {
