@@ -266,13 +266,13 @@ const AddLiftMutation = mutationWithClientMutationId({
     },
   },
   outputFields: {
-    liftEdge: {
+    newLift: {
       type: Lift,
       // Some weird danger here, postgres returns an array of inserted
       // ids, in this case just one, and the last member is the
       // clientMutationId which I have no clue what it does.
       // So this works for now but thar be dragons
-      resolve: (lift) => { debug(`derpin: ${lift.toJSON()}`); return lift.toJSON(); },
+      resolve: (lift) => lift.toJSON(),
     },
   },
   mutateAndGetPayload: ({ workout_id, sets, reps, name, weight }) => {
