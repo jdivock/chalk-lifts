@@ -181,11 +181,14 @@ query AccountQuery {
 ##### Query
 ```js
 mutation AddLiftMutation($input: AddLiftMutationInput!) {
-    addLiftMutation(input: $input) {
-    newLift {
-      id,
-      weight,
-      sets
+  addLiftMutation(input: $input) {
+    liftEdge {
+      node {
+        id,
+        sets,
+        weight,
+        reps,
+      }
     },
     clientMutationId
   }
@@ -196,7 +199,7 @@ mutation AddLiftMutation($input: AddLiftMutationInput!) {
 ```js
 {
   "input": {
-    "workoutid": "V29ya291dDox",
+    "workout_id": "V29ya291dDox",
     "sets": 1,
     "reps": 2,
     "weight": 100,

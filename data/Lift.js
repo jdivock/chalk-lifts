@@ -21,4 +21,4 @@ export const getLifts = (workout_id) =>
 export const addLift = (lift) =>
   new Lift(lift)
     .save()
-    .then(newLift => { debug(newLift.toJSON()); return newLift;});
+    .then(newLift => newLift);

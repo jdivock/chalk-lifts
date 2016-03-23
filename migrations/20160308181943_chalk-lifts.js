@@ -27,9 +27,6 @@ export const up = (knex, Promise) =>
       table.integer('reps');
       table.integer('sets');
       table.decimal('weight');
-      table.integer('user_id')
-        .references('id')
-        .inTable('users');
       table.integer('workout_id')
         .references('id')
         .inTable('workouts');

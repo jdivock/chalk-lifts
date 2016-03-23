@@ -266,13 +266,11 @@ const AddLiftMutation = mutationWithClientMutationId({
     },
   },
   outputFields: {
-    newLift: {
-      type: Lift,
-      // Some weird danger here, postgres returns an array of inserted
-      // ids, in this case just one, and the last member is the
-      // clientMutationId which I have no clue what it does.
-      // So this works for now but thar be dragons
-      resolve: (lift) => lift.toJSON(),
+    liftEdge: {
+      type: GraphQLLiftEdge,
+      // TODO: can I get a cursor here somehow?
+      // Do I even need it?
+      resolve: (lift) => ({ node: lift.toJSON() }),
     },
   },
   mutateAndGetPayload: ({ workout_id, sets, reps, name, weight }) => {
