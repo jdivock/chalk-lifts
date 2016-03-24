@@ -45,7 +45,7 @@ export default Relay.createContainer(Lift, {
         name,
         weight,
         sets,
-        reps
+        reps,
       }
     `,
   },

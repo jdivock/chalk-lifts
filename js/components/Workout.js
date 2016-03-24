@@ -72,6 +72,7 @@ class Workout extends React.Component {
         <AddLiftDialog
           open={this.state.openLiftDialog}
           handleClose={this.closeLiftDialog}
+          workoutId={workout.id}
         />
       </Card>
     );
@@ -86,6 +87,7 @@ export default Relay.createContainer(Workout, {
   fragments: {
     workout: () => Relay.QL`
       fragment on Workout {
+        id,
         name,
         date,
         lifts(first:10) {

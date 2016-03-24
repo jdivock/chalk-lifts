@@ -1,10 +1,13 @@
 import React, { PropTypes } from 'react';
+import Relay from 'react-relay';
 import Debug from 'debug';
 import {
   Dialog,
   FlatButton,
   TextField,
 } from 'material-ui';
+
+import { AddLiftMutation } from '../../mutations';
 
 const styles = {
   textField: {
@@ -33,7 +36,23 @@ export default class AddLiftDialog extends React.Component {
   }
 
   handleSave = () => {
+    const {
+      lift,
+      sets,
+      rep,
+      weight,
+      workoutId,
+    } = this.state;
 
+    Relay.Store.commitUpdate(
+      new AddLiftMutation({
+        workout_id: workoutId,
+        lift,
+        sets,
+        rep,
+        weight,
+      })
+    );
   }
 
   handleLiftChange = ({ target }) => {
@@ -114,6 +133,7 @@ export default class AddLiftDialog extends React.Component {
 AddLiftDialog.propTypes = {
   open: PropTypes.bool,
   handleClose: PropTypes.func,
+  workoutId: PropTypes.string,
 };
 
 AddLiftDialog.displayName = 'AddLiftDialog';

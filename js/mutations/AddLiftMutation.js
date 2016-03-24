@@ -39,8 +39,7 @@ export default class AddLiftMutation extends Relay.Mutation {
   // instruct the server to include only those fields in its response.
   getFatQuery() {
     return Relay.QL`
-      fragment on AddLiftPayload {
-        workout {
+      fragment on Workout {
           lifts {
             edges {
               cursor,
@@ -53,7 +52,6 @@ export default class AddLiftMutation extends Relay.Mutation {
             }
           }
         }
-      }
     `;
   }
 
@@ -66,7 +64,7 @@ export default class AddLiftMutation extends Relay.Mutation {
     return [{
       type: 'FIELDS_CHANGE',
       fieldIDs: {
-        story: this.props.story.id,
+        name: this.props.name.id,
       },
     }];
   }
@@ -76,9 +74,9 @@ export default class AddLiftMutation extends Relay.Mutation {
   // use this fragment to ensure that the story's ID is available wherever
   // this mutation is used.
   static fragments = {
-    story: () => Relay.QL`
-    fragment on Story {
-      id,
+    lift: () => Relay.QL`
+    fragment on Lift {
+      name,
     }
     `,
   };
