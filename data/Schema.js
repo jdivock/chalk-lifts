@@ -64,15 +64,15 @@ const Lift = new GraphQLObjectType({
   fields: () => ({
     id: globalIdField('Lift'),
     reps: {
-      description: 'Bro Reps',
+      description: 'Reps',
       type: GraphQLInt,
     },
     sets: {
-      description: 'Bro Sets',
+      description: 'Sets',
       type: GraphQLInt,
     },
     weight: {
-      description: 'Bro Weight',
+      description: 'Weight',
       type: GraphQLFloat,
     },
     name: {
@@ -246,7 +246,7 @@ const AddLiftMutation = mutationWithClientMutationId({
   inputFields: {
     workout_id: {
       type: new GraphQLNonNull(GraphQLID),
-      description: 'Workout identifier',
+      description: 'Workout ID',
     },
     name: {
       type: new GraphQLNonNull(GraphQLString),
@@ -254,15 +254,15 @@ const AddLiftMutation = mutationWithClientMutationId({
     },
     reps: {
       type: new GraphQLNonNull(GraphQLInt),
-      description: 'Bro reps',
+      description: 'Reps',
     },
     sets: {
       type: new GraphQLNonNull(GraphQLInt),
-      description: 'Bro sets',
+      description: 'Sets',
     },
     weight: {
       type: new GraphQLNonNull(GraphQLFloat),
-      description: 'Bro weight',
+      description: 'Weight',
     },
   },
   outputFields: {
