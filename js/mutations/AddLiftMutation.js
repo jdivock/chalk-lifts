@@ -37,21 +37,25 @@ export default class AddLiftMutation extends Relay.Mutation {
   // story or not. Relay will intersect this query with a ‘tracked query’
   // that represents the data that your application actually uses, and
   // instruct the server to include only those fields in its response.
+  // Tried this guy but it doesn't work cause it needs an id
+  //
+  // lifts {
+  //   edges {
+  //     cursor,
+  //     node, {
+  //       id,
+  //       name,
+  //       sets,
+  //       reps
+  //     }
+  //   }
+  // }
   getFatQuery() {
     return Relay.QL`
       fragment on Workout {
-          lifts {
-            edges {
-              cursor,
-              node, {
-                id,
-                name,
-                sets,
-                reps
-              }
-            }
-          }
-        }
+        id,
+        name,
+      }
     `;
   }
 
