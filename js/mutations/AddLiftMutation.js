@@ -56,7 +56,7 @@ export default class AddLiftMutation extends Relay.Mutation {
       type: 'RANGE_ADD',
       parentName: 'workout',
       parentID: this.props.workout.id,
-      connectionName: 'lift',
+      connectionName: 'lifts',
       edgeName: 'newLiftEdge',
       rangeBehaviors: {
         '': 'append',
