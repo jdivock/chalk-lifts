@@ -258,7 +258,7 @@ mutation addLift($input: AddLiftMutationInput!) {
 }
 ```
 
-##### Variables
+###### Variables
 ```js
 {
   "input": {
@@ -268,6 +268,31 @@ mutation addLift($input: AddLiftMutationInput!) {
     "weight": 100,
     "name": "stuff",
     "clientMutationId": 0
+  }
+}
+```
+
+#### Edit Lift
+```js
+mutation EditLiftMutation($input: EditLiftMutationInput!) {
+  editLift(input: $input) {
+    lift {
+      name,
+      id,
+      sets,
+    }
+  }
+}
+
+{
+  "input": {
+      "id": "TGlmdDozMzk=",
+      "workout_id": "50",
+      "sets": 3,
+      "reps": 3,
+      "weight": 100,
+      "name": "test update",
+      "clientMutationId": 0
   }
 }
 ```
