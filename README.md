@@ -220,6 +220,7 @@ mutation RemoveLiftMutation($input: RemoveLiftMutationInput!) {
   }
 }
 
+// Variables
 {
   "input": {
     "id": "TGlmdDozMzY",
@@ -256,10 +257,8 @@ mutation addLift($input: AddLiftMutationInput!) {
     clientMutationId
   }
 }
-```
 
-###### Variables
-```js
+// Variables
 {
   "input": {
     "workout_id": "V29ya291dDox",
@@ -284,6 +283,7 @@ mutation EditLiftMutation($input: EditLiftMutationInput!) {
   }
 }
 
+// Variables
 {
   "input": {
       "id": "TGlmdDozMzk=",
