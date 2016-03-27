@@ -230,7 +230,7 @@ mutation RemoveLiftMutation($input: RemoveLiftMutationInput!) {
 
 ##### Add Lift
 ```js
-mutation AddLiftMutation($input: AddLiftMutationInput!) {
+mutation addLift($input: AddLiftMutationInput!) {
   addLiftMutation(input: $input) {
     newLiftEdge {
       node {
