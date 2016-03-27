@@ -21,6 +21,28 @@ App on http://localhost:3000
 ## Relay Queries
 
 ##### Basic
+```
+{
+  user(email:"jay@jay.com") {
+    workouts {
+      edges {
+        node {
+          id,
+          name
+          lifts {
+            edges {
+              node {
+                id,
+                name,
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
 ```js
 {
   workout(id:1) {
