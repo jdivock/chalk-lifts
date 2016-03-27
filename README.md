@@ -1,3 +1,26 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Chalk Lifts *](#chalk-lifts-)
+  - [Setup](#setup)
+    - [Prereqs](#prereqs)
+    - [Setup](#setup-1)
+  - [Relay Queries](#relay-queries)
+    - [Basic](#basic)
+    - [Mutations](#mutations)
+      - [Remove Lift](#remove-lift)
+      - [Add Lift](#add-lift)
+      - [Edit Lift](#edit-lift)
+    - [Other Random Relay queries that may or may not work](#other-random-relay-queries-that-may-or-may-not-work)
+        - [Getting 'first' for free with connections](#getting-first-for-free-with-connections)
+        - [Kitchen Sink](#kitchen-sink)
+        - [Finding by globalId](#finding-by-globalid)
+        - [Using Cursors](#using-cursors)
+  - [DB (knex)](#db-knex)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Chalk Lifts [![Build Status](https://travis-ci.org/jdivock/chalk-lifts.svg?branch=master)](https://travis-ci.org/jdivock/chalk-lifts)
 
 Yeah, writing this (again), using graphQL/Relay, let's see if I can actually get it working.
