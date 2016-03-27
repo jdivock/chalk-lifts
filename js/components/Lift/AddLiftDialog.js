@@ -7,7 +7,7 @@ import {
   TextField,
 } from 'material-ui';
 
-import { AddLiftMutation } from '../../mutations/lift';
+import { AddLiftMutation } from 'mutations/lift';
 
 const styles = {
   textField: {

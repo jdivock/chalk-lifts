@@ -38,6 +38,7 @@ class Lift extends React.Component {
   render() {
     const { lift } = this.props;
     let weight;
+
     if (lift && lift.weight) {
       weight = `${lift.weight} x `;
     } else {
