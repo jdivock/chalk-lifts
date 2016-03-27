@@ -1,14 +1,21 @@
 import Relay from 'react-relay';
 
 export default class AddLiftMutation extends Relay.Mutation {
+  static fragments = {
+    workout: () => Relay.QL`
+      fragment on Workout {
+        id,
+      }
+    `,
+  };
 
   getMutation() {
-    return Relay.QL`mutation{addLiftMutation}`;
+    return Relay.QL`mutation { addLiftMutation }`;
   }
 
   getVariables() {
     const {
-      workout_id,
+      workout,
       name,
       reps,
       sets,
@@ -16,7 +23,7 @@ export default class AddLiftMutation extends Relay.Mutation {
     } = this.props;
 
     return {
-      workout_id,
+      workout_id: workout.id,
       name,
       reps,
       sets,
@@ -26,7 +33,19 @@ export default class AddLiftMutation extends Relay.Mutation {
 
   getFatQuery() {
     return Relay.QL`
-      fragment on AddLiftMutationPayload {
+      fragment on AddLiftMutationPayload @relay(pattern:true) {
+        workout {
+          lifts {
+            edges {
+              node {
+                name,
+                reps,
+                sets,
+                weight,
+              }
+            }
+          }
+        },
         newLiftEdge,
       }
     `;
@@ -46,11 +65,19 @@ export default class AddLiftMutation extends Relay.Mutation {
     }];
   }
 
-  static fragments = {
-    workout: () => Relay.QL`
-      fragment on Workout {
-        id,
-      }
-    `,
-  };
+  getOptimisticResponse() {
+    return {
+      newLiftEdge: {
+        node: {
+          name: this.props.name,
+          reps: this.props.reps,
+          sets: this.props.sets,
+          weight: this.props.weight,
+        },
+      },
+      workout: {
+        id: this.props.workout.id,
+      },
+    };
+  }
 }

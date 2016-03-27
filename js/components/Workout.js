@@ -76,6 +76,7 @@ class Workout extends React.Component {
         <AddLiftDialog
           open={this.state.openLiftDialog}
           handleClose={this.closeLiftDialog}
+          workout={workout}
         />
       </Card>
     );

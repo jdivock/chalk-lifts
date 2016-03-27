@@ -30,35 +30,37 @@ class AddLiftDialog extends React.Component {
     super(props);
 
     this.state = {
-      lift: null,
-      sets: null,
-      reps: null,
-      weight: null,
+      name: '',
+      sets: 0,
+      reps: 0,
+      weight: 0,
     };
   }
 
   handleSave = () => {
     const {
-      lift,
+      name,
       sets,
-      rep,
+      reps,
       weight,
     } = this.state;
 
+    const { workout } = this.props;
+
     Relay.Store.commitUpdate(
       new AddLiftMutation({
-        workout_id: this.props.workout.id,
-        lift,
+        name,
         sets,
-        rep,
+        reps,
         weight,
+        workout,
       })
     );
   }
 
   handleLiftChange = ({ target }) => {
     this.setState({
-      lift: target.value,
+      name: target.value,
     });
   }
 
@@ -85,6 +87,13 @@ class AddLiftDialog extends React.Component {
       open,
     } = this.props;
 
+    const {
+      name,
+      reps,
+      sets,
+      weight,
+    } = this.state;
+
     const actions = [
       <FlatButton
         label="Cancel"
@@ -100,6 +109,7 @@ class AddLiftDialog extends React.Component {
     ];
 
     return (
+
       <Dialog
         title="Add Lift"
         actions={actions}
@@ -109,22 +119,26 @@ class AddLiftDialog extends React.Component {
         <TextField
           hintText="Lift"
           onChange={this.handleLiftChange}
+          value={name}
           style={styles.textField}
         />
         <TextField
           hintText="Weight"
           onChange={this.handleWeightChange}
           style={styles.textField}
+          value={weight}
         />
         <TextField
           hintText="Sets"
           onChange={this.handleSetsChange}
           style={styles.textField}
+          value={sets}
         />
         <TextField
           hintText="Reps"
           onChange={this.handleRepsChange}
           style={styles.textField}
+          value={reps}
         />
       </Dialog>
     );
