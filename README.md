@@ -204,7 +204,7 @@ query AccountQuery {
 ```js
 mutation AddLiftMutation($input: AddLiftMutationInput!) {
   addLiftMutation(input: $input) {
-    liftEdge {
+    newLiftEdge {
       node {
         id,
         sets,
@@ -212,6 +212,19 @@ mutation AddLiftMutation($input: AddLiftMutationInput!) {
         reps,
       }
     },
+    workout {
+      id,
+      name,
+      lifts {
+        edges {
+          node {
+            id,
+            name,
+            reps
+          }
+        }
+      }
+    }
     clientMutationId
   }
 }
