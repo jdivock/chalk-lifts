@@ -20,7 +20,7 @@ App on http://localhost:3000
 
 ## Relay Queries
 
-##### Basic
+### Basic
 ```
 {
   user(email:"jay@jay.com") {
@@ -43,6 +43,107 @@ App on http://localhost:3000
   }
 }
 ```
+
+### Mutations
+
+#### Remove Lift
+```js
+mutation RemoveLiftMutation($input: RemoveLiftMutationInput!) {
+  removeLift(input: $input) {
+    removedLiftId,
+    workout {
+      id,
+      name,
+      lifts {
+        edges {
+          node {
+            id,
+            name,
+          }
+        }
+      }
+    }
+  }
+}
+
+// Variables
+{
+  "input": {
+    "id": "TGlmdDozMzY",
+    "clientMutationId": 0
+  }
+}
+```
+
+#### Add Lift
+```js
+mutation addLift($input: AddLiftMutationInput!) {
+  addLiftMutation(input: $input) {
+    newLiftEdge {
+      node {
+        id,
+        sets,
+        weight,
+        reps,
+      }
+    },
+    workout {
+      id,
+      name,
+      lifts {
+        edges {
+          node {
+            id,
+            name,
+            reps
+          }
+        }
+      }
+    }
+    clientMutationId
+  }
+}
+
+// Variables
+{
+  "input": {
+    "workout_id": "V29ya291dDox",
+    "sets": 1,
+    "reps": 2,
+    "weight": 100,
+    "name": "stuff",
+    "clientMutationId": 0
+  }
+}
+```
+
+#### Edit Lift
+```js
+mutation EditLiftMutation($input: EditLiftMutationInput!) {
+  editLift(input: $input) {
+    lift {
+      name,
+      id,
+      sets,
+    }
+  }
+}
+
+// Variables
+{
+  "input": {
+      "id": "TGlmdDozMzk=",
+      "workout_id": "50",
+      "sets": 3,
+      "reps": 3,
+      "weight": 100,
+      "name": "test update",
+      "clientMutationId": 0
+  }
+}
+```
+
+### Other Random Relay queries that may or may not work
 ```js
 {
   workout(id:1) {
@@ -194,105 +295,6 @@ query AccountQuery {
         }
       }
     }
-  }
-}
-```
-
-#### Mutations
-
-##### Remove Lift
-```js
-mutation RemoveLiftMutation($input: RemoveLiftMutationInput!) {
-  removeLift(input: $input) {
-    removedLiftId,
-    workout {
-      id,
-      name,
-      lifts {
-        edges {
-          node {
-            id,
-            name,
-          }
-        }
-      }
-    }
-  }
-}
-
-// Variables
-{
-  "input": {
-    "id": "TGlmdDozMzY",
-    "clientMutationId": 0
-  }
-}
-```
-
-##### Add Lift
-```js
-mutation addLift($input: AddLiftMutationInput!) {
-  addLiftMutation(input: $input) {
-    newLiftEdge {
-      node {
-        id,
-        sets,
-        weight,
-        reps,
-      }
-    },
-    workout {
-      id,
-      name,
-      lifts {
-        edges {
-          node {
-            id,
-            name,
-            reps
-          }
-        }
-      }
-    }
-    clientMutationId
-  }
-}
-
-// Variables
-{
-  "input": {
-    "workout_id": "V29ya291dDox",
-    "sets": 1,
-    "reps": 2,
-    "weight": 100,
-    "name": "stuff",
-    "clientMutationId": 0
-  }
-}
-```
-
-#### Edit Lift
-```js
-mutation EditLiftMutation($input: EditLiftMutationInput!) {
-  editLift(input: $input) {
-    lift {
-      name,
-      id,
-      sets,
-    }
-  }
-}
-
-// Variables
-{
-  "input": {
-      "id": "TGlmdDozMzk=",
-      "workout_id": "50",
-      "sets": 3,
-      "reps": 3,
-      "weight": 100,
-      "name": "test update",
-      "clientMutationId": 0
   }
 }
 ```
