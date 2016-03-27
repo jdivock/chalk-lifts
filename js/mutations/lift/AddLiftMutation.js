@@ -10,7 +10,7 @@ export default class AddLiftMutation extends Relay.Mutation {
   };
 
   getMutation() {
-    return Relay.QL`mutation { addLiftMutation }`;
+    return Relay.QL`mutation { addLift }`;
   }
 
   getVariables() {

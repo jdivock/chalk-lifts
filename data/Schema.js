@@ -1,11 +1,27 @@
 /* eslint no-use-before-define:0, new-cap: 0 */
 import _findIndex from 'lodash.findindex';
 import Debug from 'debug';
-import { getUser, getUserByEmail, getUsers } from './User';
-import { getLift, getLifts, addLift } from './Lift';
-import { getWorkout, getWorkouts } from './Workout';
+
+import {
+  getUser,
+  getUserByEmail,
+  getUsers,
+} from './User';
+
+import {
+  addLift,
+  getLift,
+  getLifts,
+  removeLift,
+} from './Lift';
+
+import {
+  getWorkout,
+  getWorkouts,
+} from './Workout';
 
 // Stubs needed to regenerate schema . . . not ideal
+// const removeLift = () => {};
 // const getUserByEmail = () => {};
 // const getUser = () => {};
 // const getLifts = () => {};
@@ -253,6 +269,33 @@ const Query = new GraphQLObjectType({
 });
 
 // MUTATIONS
+const RemoveLiftMutation = mutationWithClientMutationId({
+  name: 'RemoveLiftMutation',
+  inputFields: {
+    id: {
+      type: new GraphQLNonNull(GraphQLID),
+      description: 'Lift Id',
+    },
+  },
+  outputFields: {
+    removedLiftId: {
+      type: GraphQLID,
+      resolve: ({ id }) => id,
+    },
+    workout: {
+      type: workoutType,
+      resolve: (lift) => getWorkout(lift.workout_id),
+    },
+  },
+  mutateAndGetPayload: ({ id }) => {
+    const localLiftId = fromGlobalId(id).id;
+    let lift;
+
+    return getLift({ id: localLiftId })
+      .then((dbLift) => {lift = dbLift; return removeLift(lift.id);})
+      .then(() => lift);
+  },
+});
 
 const AddLiftMutation = mutationWithClientMutationId({
   name: 'AddLiftMutation',
@@ -312,7 +355,8 @@ const AddLiftMutation = mutationWithClientMutationId({
 const mutationType = new GraphQLObjectType({
   name: 'Mutation',
   fields: () => ({
-    addLiftMutation: AddLiftMutation,
+    addLift: AddLiftMutation,
+    removeLift: RemoveLiftMutation,
   }),
 });
 

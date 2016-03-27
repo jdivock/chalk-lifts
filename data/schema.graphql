@@ -34,7 +34,8 @@ type liftEdge {
 }
 
 type Mutation {
-  addLiftMutation(input: AddLiftMutationInput!): AddLiftMutationPayload
+  addLift(input: AddLiftMutationInput!): AddLiftMutationPayload
+  removeLift(input: RemoveLiftMutationInput!): RemoveLiftMutationPayload
 }
 
 interface Node {
@@ -54,6 +55,17 @@ type Query {
   workout(id: ID!): Workout
   lift(id: ID!): Lift
   node(id: ID!): Node
+}
+
+input RemoveLiftMutationInput {
+  id: ID!
+  clientMutationId: String!
+}
+
+type RemoveLiftMutationPayload {
+  removedLiftId: ID
+  workout: Workout
+  clientMutationId: String!
 }
 
 type User implements Node {

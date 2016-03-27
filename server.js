@@ -45,6 +45,13 @@ const compiler = webpack({
       },
     ],
   },
+  resolve: {
+    root: path.resolve(__dirname),
+    alias: {
+      mutations: 'js/mutations',
+      components: 'js/components',
+    },
+  },
   output: { filename: 'app.js', path: '/' },
 });
 

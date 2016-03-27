@@ -55,6 +55,7 @@ class Workout extends React.Component {
       edge =>
         <Lift
           lift={edge.node}
+          workout={workout}
           key={edge.node.id}
         />
     );
@@ -90,6 +91,7 @@ export default Relay.createContainer(Workout, {
         id,
         name,
         date,
+        ${Lift.getFragment('workout')},
         ${AddLiftDialog.getFragment('workout')},
         lifts(first:10) {
           edges {

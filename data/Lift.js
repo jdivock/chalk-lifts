@@ -22,3 +22,8 @@ export const addLift = (lift) =>
   new Lift(lift)
     .save()
     .then(newLift => newLift.toJSON());
+
+export const removeLift = (id) =>
+  new Lift({ id })
+    .destroy()
+    .then(newLift => newLift.toJSON());
