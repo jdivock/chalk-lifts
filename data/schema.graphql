@@ -8,7 +8,7 @@ input AddLiftMutationInput {
 }
 
 type AddLiftMutationPayload {
-  newLift: Lift
+  newLiftEdge: liftEdge
   clientMutationId: String!
 }
 
@@ -20,15 +20,14 @@ type Lift implements Node {
   name: String
   comments: String
   workout_id: ID
-  workout(after: String, first: Int, before: String, last: Int): WorkoutConnection
 }
 
-type LiftConnection {
+type liftConnection {
   pageInfo: PageInfo!
-  edges: [LiftEdge]
+  edges: [liftEdge]
 }
 
-type LiftEdge {
+type liftEdge {
   node: Lift
   cursor: String!
 }
@@ -71,8 +70,7 @@ type Workout implements Node {
   updated_at: String
   name: String
   comments: String
-  user: User
-  lifts(after: String, first: Int, before: String, last: Int): LiftConnection
+  lifts(after: String, first: Int, before: String, last: Int): liftConnection
 }
 
 type WorkoutConnection {

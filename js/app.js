@@ -9,7 +9,7 @@ import AppHomeRoute from './routes/AppHomeRoute';
 ReactDOM.render(
     <Relay.RootContainer
       Component={App}
-      route={new AppHomeRoute()}
+      route={new AppHomeRoute({ userEmail: 'jay@jay.com' })}
     />,
     document.getElementById('root')
 );

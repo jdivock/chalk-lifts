@@ -4,6 +4,17 @@ import { getUser, getUserByEmail, getUsers } from './User';
 import { getLift, getLifts, addLift } from './Lift';
 import { getWorkout, getWorkouts } from './Workout';
 
+// Stubs needed to regenerate schema . . . not ideal
+// const getUserByEmail = () => {};
+// const getUser = () => {};
+// const getLifts = () => {};
+// const getWorkouts = () => {};
+// const getWorkout = () => {};
+// const getUsers = () => {};
+// const getLift = () => {};
+// const addLift = () => {};
+
+
 const debug = Debug('chalk-lifts:Schema.js');
 
 import {
@@ -21,6 +32,7 @@ import {
   connectionArgs,
   connectionDefinitions,
   connectionFromPromisedArray,
+  // cursorForObjectInConnection,
   fromGlobalId,
   globalIdField,
   mutationWithClientMutationId,
@@ -45,11 +57,11 @@ const { nodeInterface, nodeField } = nodeDefinitions(
       // This is super hacky, might need bookshelf or a way
       // to define types to decent what the obj is
       if (obj.workout_id) {
-        return Lift;
+        return liftType;
       } else if (obj.email) {
-        return User;
+        return userType;
       } else if (obj.user_id) {
-        return Workout;
+        return workoutType;
       }
 
       return null;
@@ -58,7 +70,7 @@ const { nodeInterface, nodeField } = nodeDefinitions(
 
 // OBJECTS
 
-const Lift = new GraphQLObjectType({
+const liftType = new GraphQLObjectType({
   description: 'Records of lifts recorded',
   name: 'Lift',
   fields: () => ({
@@ -92,7 +104,7 @@ const Lift = new GraphQLObjectType({
 });
 
 
-const Workout = new GraphQLObjectType({
+const workoutType = new GraphQLObjectType({
   description: `Workout entry, consisting of individual lifts
     done during workout`,
   name: 'Workout',
@@ -122,15 +134,15 @@ const Workout = new GraphQLObjectType({
       type: LiftConnection,
       args: connectionArgs,
       resolve: (workout, args) => connectionFromPromisedArray(
-          getLifts(workout.id),
-          args
-          ),
+        getLifts(workout.id),
+        args
+      ),
     },
   }),
   interfaces: [nodeInterface],
 });
 
-const User = new GraphQLObjectType({
+const userType = new GraphQLObjectType({
   name: 'User',
   fields: () => ({
     id: globalIdField('User'),
@@ -165,15 +177,15 @@ const {
   connectionType: WorkoutConnection,
 } = connectionDefinitions({
   name: 'Workout',
-  nodeType: Workout,
+  nodeType: workoutType,
 });
 
 const {
   connectionType: LiftConnection,
   edgeType: GraphQLLiftEdge,
 } = connectionDefinitions({
-  name: 'Lift',
-  nodeType: Lift,
+  name: 'lift',
+  nodeType: liftType,
 });
 
 // QUERIES
@@ -183,7 +195,7 @@ const Query = new GraphQLObjectType({
   fields: () => ({
     user: {
       description: 'Query user users',
-      type: User,
+      type: userType,
       args: {
         id: {
           description: 'User ID',
@@ -205,7 +217,7 @@ const Query = new GraphQLObjectType({
     },
     users: {
       description: 'List of users in the system',
-      type: new GraphQLList(User),
+      type: new GraphQLList(userType),
       args: {},
       resolve() {
         return getUsers();
@@ -213,7 +225,7 @@ const Query = new GraphQLObjectType({
     },
     workout: {
       description: 'Workouts',
-      type: Workout,
+      type: workoutType,
       args: {
         id: {
           type: new GraphQLNonNull(GraphQLID),
@@ -225,7 +237,7 @@ const Query = new GraphQLObjectType({
     },
     lift: {
       description: 'Retrieve lifts by identifier',
-      type: Lift,
+      type: liftType,
       args: {
         id: {
           type: new GraphQLNonNull(GraphQLID),
@@ -266,11 +278,24 @@ const AddLiftMutation = mutationWithClientMutationId({
     },
   },
   outputFields: {
-    liftEdge: {
+    newLiftEdge: {
       type: GraphQLLiftEdge,
-      // TODO: can I get a cursor here somehow?
-      // Do I even need it?
-      resolve: (lift) => ({ node: lift.toJSON() }),
+      resolve: (payload) => {
+        const lift = payload;
+        return {
+          // TODO: can I get a cursor here somehow?
+          // Do I even need it?
+          // cursor: cursorForObjectInConnection(
+          //   getLifts(lift.workout_id),
+          //   lift
+          // ),
+          node: lift,
+        };
+      },
+    },
+    workout: {
+      type: workoutType,
+      resolve: (payload) => getWorkout(payload.workout_id),
     },
   },
   mutateAndGetPayload: ({ workout_id, sets, reps, name, weight }) => {

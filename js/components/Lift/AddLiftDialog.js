@@ -22,6 +22,8 @@ debug('Building AddLiftDialog');
 export default class AddLiftDialog extends React.Component {
   static propTypes = {
     handleClose: PropTypes.func,
+    open: PropTypes.bool,
+    workout: PropTypes.object,
   }
 
   constructor(props) {
@@ -41,12 +43,11 @@ export default class AddLiftDialog extends React.Component {
       sets,
       rep,
       weight,
-      workoutId,
     } = this.state;
 
     Relay.Store.commitUpdate(
       new AddLiftMutation({
-        workout_id: workoutId,
+        workout_id: this.props.workout.id,
         lift,
         sets,
         rep,
@@ -130,12 +131,12 @@ export default class AddLiftDialog extends React.Component {
   }
 }
 
-AddLiftDialog.propTypes = {
-  open: PropTypes.bool,
-  handleClose: PropTypes.func,
-  workoutId: PropTypes.string,
-};
-
-AddLiftDialog.displayName = 'AddLiftDialog';
-
-export default AddLiftDialog;
+export default Relay.createContainer(AddLiftDialog, {
+  fragments: {
+    workout: () => Relay.QL`
+      fragment on Workout {
+        id,
+      }
+    `,
+  },
+});
