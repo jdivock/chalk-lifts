@@ -25,6 +25,10 @@ const styles = {
 };
 
 class Workout extends React.Component {
+  static propTypes = {
+    workout: PropTypes.object,
+  }
+
   constructor(props) {
     super(props);
 
@@ -72,16 +76,11 @@ class Workout extends React.Component {
         <AddLiftDialog
           open={this.state.openLiftDialog}
           handleClose={this.closeLiftDialog}
-          workoutId={workout.id}
         />
       </Card>
     );
   }
 }
-
-Workout.propTypes = {
-  workout: PropTypes.object,
-};
 
 export default Relay.createContainer(Workout, {
   fragments: {
@@ -90,6 +89,7 @@ export default Relay.createContainer(Workout, {
         id,
         name,
         date,
+        ${AddLiftDialog.getFragment('workout')},
         lifts(first:10) {
           edges {
             node {

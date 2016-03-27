@@ -47,10 +47,10 @@ export default class AddLiftMutation extends Relay.Mutation {
   }
 
   static fragments = {
-    lift: () => Relay.QL`
-    fragment on Workout {
-      id,
-    }
+    workout: () => Relay.QL`
+      fragment on Workout {
+        id,
+      }
     `,
   };
 }

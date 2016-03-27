@@ -19,7 +19,7 @@ const debug = Debug('chalk-lifts:components/AddLiftDialog');
 
 debug('Building AddLiftDialog');
 
-export default class AddLiftDialog extends React.Component {
+class AddLiftDialog extends React.Component {
   static propTypes = {
     handleClose: PropTypes.func,
     open: PropTypes.bool,
@@ -135,7 +135,7 @@ export default Relay.createContainer(AddLiftDialog, {
   fragments: {
     workout: () => Relay.QL`
       fragment on Workout {
-        id,
+        ${AddLiftMutation.getFragment('workout')},
       }
     `,
   },

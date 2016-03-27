@@ -9,6 +9,7 @@ input AddLiftMutationInput {
 
 type AddLiftMutationPayload {
   newLiftEdge: liftEdge
+  workout: Workout
   clientMutationId: String!
 }
 
