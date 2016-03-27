@@ -200,7 +200,35 @@ query AccountQuery {
 
 #### Mutations
 
-##### Query
+##### Remove Lift
+```js
+mutation RemoveLiftMutation($input: RemoveLiftMutationInput!) {
+  removeLift(input: $input) {
+    removedLiftId,
+    workout {
+      id,
+      name,
+      lifts {
+        edges {
+          node {
+            id,
+            name,
+          }
+        }
+      }
+    }
+  }
+}
+
+{
+  "input": {
+    "id": "TGlmdDozMzY",
+    "clientMutationId": 0
+  }
+}
+```
+
+##### Add Lift
 ```js
 mutation AddLiftMutation($input: AddLiftMutationInput!) {
   addLiftMutation(input: $input) {
