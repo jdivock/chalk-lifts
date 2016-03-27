@@ -18,7 +18,7 @@ export const getLifts = (workout_id) =>
     .then(lifts => lifts.toJSON())
     .catch(() => []);
 
-export const addLift = (lift) =>
+export const saveLift = (lift) =>
   new Lift(lift)
     .save()
     .then(newLift => newLift.toJSON());

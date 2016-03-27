@@ -7,7 +7,10 @@ import {
   TextField,
 } from 'material-ui';
 
-import { AddLiftMutation } from 'mutations/lift';
+import {
+  AddLiftMutation,
+  EditLiftMutation,
+} from 'mutations/lift';
 
 const styles = {
   textField: {
@@ -15,8 +18,12 @@ const styles = {
   },
 };
 
-const debug = Debug('chalk-lifts:components/AddLiftDialog');
+const SAVE_TYPE = {
+  NEW: 'new',
+  EDIT: 'edit',
+};
 
+const debug = Debug('chalk-lifts:components/AddLiftDialog');
 debug('Building AddLiftDialog');
 
 class AddLiftDialog extends React.Component {
@@ -24,6 +31,7 @@ class AddLiftDialog extends React.Component {
     handleClose: PropTypes.func,
     open: PropTypes.bool,
     workout: PropTypes.object,
+    lift: PropTypes.object,
   }
 
   constructor(props) {
@@ -37,28 +45,66 @@ class AddLiftDialog extends React.Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.lift) {
+      this.setState({
+        name: nextProps.lift.name,
+        sets: nextProps.lift.sets,
+        reps: nextProps.lift.reps,
+        weight: nextProps.lift.weight,
+        saveType: SAVE_TYPE.EDIT,
+      });
+    } else {
+      this.setState({
+        name: '',
+        sets: 0,
+        reps: 0,
+        weight: 0,
+        saveType: SAVE_TYPE.NEW,
+      });
+    }
+  }
+
   handleSave = () => {
     const {
       name,
       sets,
       reps,
       weight,
+      saveType,
     } = this.state;
 
     const {
       workout,
       handleClose,
+      lift,
     } = this.props;
 
-    Relay.Store.commitUpdate(
-      new AddLiftMutation({
-        name,
-        sets,
-        reps,
-        weight,
-        workout,
-      })
-    );
+    debug(saveType);
+
+    if (saveType === SAVE_TYPE.NEW) {
+      Relay.Store.commitUpdate(
+        new AddLiftMutation({
+          name,
+          sets,
+          reps,
+          weight,
+          workout,
+        })
+      );
+    } else {
+      Relay.Store.commitUpdate(
+        new EditLiftMutation({
+          id: lift.id,
+          workout_id: lift.workout_id,
+          name,
+          sets,
+          reps,
+          weight,
+        })
+      );
+    }
+
     handleClose();
   }
 
@@ -154,7 +200,7 @@ export default Relay.createContainer(AddLiftDialog, {
     workout: () => Relay.QL`
       fragment on Workout {
         ${AddLiftMutation.getFragment('workout')},
-      }
+      },
     `,
   },
 });

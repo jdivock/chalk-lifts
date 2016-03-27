@@ -13,6 +13,21 @@ type AddLiftMutationPayload {
   clientMutationId: String!
 }
 
+input EditLiftMutationInput {
+  id: ID!
+  workout_id: ID!
+  name: String!
+  reps: Int!
+  sets: Int!
+  weight: Float!
+  clientMutationId: String!
+}
+
+type EditLiftMutationPayload {
+  lift: Lift
+  clientMutationId: String!
+}
+
 type Lift implements Node {
   id: ID!
   reps: Int
@@ -36,6 +51,7 @@ type liftEdge {
 type Mutation {
   addLift(input: AddLiftMutationInput!): AddLiftMutationPayload
   removeLift(input: RemoveLiftMutationInput!): RemoveLiftMutationPayload
+  editLift(input: EditLiftMutationInput!): EditLiftMutationPayload
 }
 
 interface Node {

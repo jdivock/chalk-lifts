@@ -13,6 +13,9 @@ const styles = {
     right: 5,
     cursor: 'pointer',
   },
+  cardText: {
+    cursor: 'pointer',
+  },
   cardHeader: {
     height: 30,
     textOverflow: 'ellipsis',
@@ -24,15 +27,20 @@ class Lift extends React.Component {
   static propTypes = {
     lift: PropTypes.object,
     workout: PropTypes.object,
+    onEdit: PropTypes.func,
   }
 
-  _handleRemove = () => {
+  handleRemove = () => {
     Relay.Store.commitUpdate(
       new RemoveLiftMutation({
         lift: this.props.lift,
         workout: this.props.workout,
       })
     );
+  }
+
+  handleEdit = () => {
+    this.props.onEdit(this.props.lift);
   }
 
   render() {
@@ -46,20 +54,25 @@ class Lift extends React.Component {
     }
 
     return (
-      <Card style={styles.card}>
+      <Card
+        style={styles.card}
+      >
         <CardHeader
           style={styles.cardHeader}
           title={lift.name}
         >
           <FontIcon
             className="material-icons"
-            onClick={this._handleRemove}
+            onClick={this.handleRemove}
             style={styles.remove}
           >
             remove
           </FontIcon>
         </CardHeader>
-        <CardText>
+        <CardText
+          style={styles.cardText}
+          onClick={this.handleEdit}
+        >
           {weight} {lift.sets} x {lift.reps}
         </CardText>
       </Card>
@@ -77,6 +90,7 @@ export default Relay.createContainer(Lift, {
         weight,
         sets,
         reps,
+        workout_id,
       }
     `,
     workout: () => Relay.QL`

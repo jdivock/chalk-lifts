@@ -9,10 +9,10 @@ import {
 } from './User';
 
 import {
-  addLift,
   getLift,
   getLifts,
   removeLift,
+  saveLift,
 } from './Lift';
 
 import {
@@ -29,8 +29,7 @@ import {
 // const getWorkout = () => {};
 // const getUsers = () => {};
 // const getLift = () => {};
-// const addLift = () => {};
-
+// const saveLift = () => {};
 
 const debug = Debug('chalk-lifts:Schema.js');
 
@@ -269,6 +268,56 @@ const Query = new GraphQLObjectType({
 });
 
 // MUTATIONS
+const EditLiftMutation = mutationWithClientMutationId({
+  name: 'EditLiftMutation',
+  inputFields: {
+    id: {
+      type: new GraphQLNonNull(GraphQLID),
+      description: 'Lift Id',
+    },
+    workout_id: {
+      type: new GraphQLNonNull(GraphQLID),
+      description: 'Workout ID',
+    },
+    name: {
+      type: new GraphQLNonNull(GraphQLString),
+      description: 'Workout name',
+    },
+    reps: {
+      type: new GraphQLNonNull(GraphQLInt),
+      description: 'Reps',
+    },
+    sets: {
+      type: new GraphQLNonNull(GraphQLInt),
+      description: 'Sets',
+    },
+    weight: {
+      type: new GraphQLNonNull(GraphQLFloat),
+      description: 'Weight',
+    },
+  },
+  outputFields: {
+    lift: {
+      type: liftType,
+      resolve: (lift) => lift,
+    },
+  },
+  mutateAndGetPayload: ({ id, name, reps, sets, weight, workout_id }) => {
+    const localLiftId = fromGlobalId(id).id;
+
+    const liftEntry = {
+      workout_id,
+      id: localLiftId,
+      name,
+      reps,
+      sets,
+      weight,
+    };
+
+    return saveLift(liftEntry);
+  },
+});
+
 const RemoveLiftMutation = mutationWithClientMutationId({
   name: 'RemoveLiftMutation',
   inputFields: {
@@ -348,7 +397,7 @@ const AddLiftMutation = mutationWithClientMutationId({
       weight,
     };
 
-    return addLift(liftEntry);
+    return saveLift(liftEntry);
   },
 });
 
@@ -357,6 +406,7 @@ const mutationType = new GraphQLObjectType({
   fields: () => ({
     addLift: AddLiftMutation,
     removeLift: RemoveLiftMutation,
+    editLift: EditLiftMutation,
   }),
 });
 

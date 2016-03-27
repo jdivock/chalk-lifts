@@ -46,6 +46,14 @@ class Workout extends React.Component {
   closeLiftDialog = () => {
     this.setState({
       openLiftDialog: false,
+      editableLift: null,
+    });
+  }
+
+  editLift = (lift) => {
+    this.setState({
+      openLiftDialog: true,
+      editableLift: lift,
     });
   }
 
@@ -57,6 +65,7 @@ class Workout extends React.Component {
           lift={edge.node}
           workout={workout}
           key={edge.node.id}
+          onEdit={this.editLift}
         />
     );
 
@@ -78,6 +87,7 @@ class Workout extends React.Component {
           open={this.state.openLiftDialog}
           handleClose={this.closeLiftDialog}
           workout={workout}
+          lift={this.state.editableLift}
         />
       </Card>
     );
