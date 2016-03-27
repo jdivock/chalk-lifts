@@ -7,8 +7,8 @@ const env = 'development';
 const debug = Debug('chalk-lifts:bookshelf');
 const knex = Knex(config[env]);
 
-knex.migrate.latest([config]);
-knex.seed.run([config]);
+// knex.migrate.latest([config]);
+// knex.seed.run([config]);
 
 const bookshelf = Bookshelf(knex);
 

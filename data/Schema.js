@@ -1,4 +1,5 @@
 /* eslint no-use-before-define:0, new-cap: 0 */
+import _findIndex from 'lodash.findindex';
 import Debug from 'debug';
 import { getUser, getUserByEmail, getUsers } from './User';
 import { getLift, getLifts, addLift } from './Lift';
@@ -32,9 +33,9 @@ import {
   connectionArgs,
   connectionDefinitions,
   connectionFromPromisedArray,
-  // cursorForObjectInConnection,
   fromGlobalId,
   globalIdField,
+  offsetToCursor,
   mutationWithClientMutationId,
   nodeDefinitions,
 } from 'graphql-relay';
@@ -280,18 +281,13 @@ const AddLiftMutation = mutationWithClientMutationId({
   outputFields: {
     newLiftEdge: {
       type: GraphQLLiftEdge,
-      resolve: (payload) => {
-        const lift = payload;
-        return {
-          // TODO: can I get a cursor here somehow?
-          // Do I even need it?
-          // cursor: cursorForObjectInConnection(
-          //   getLifts(lift.workout_id),
-          //   lift
-          // ),
-          node: lift,
-        };
-      },
+      resolve: (payload) => Promise.all([
+        getLifts(payload.workout_id),
+        getLift(payload.id),
+      ]).then(([lifts, lift]) => ({
+        cursor: offsetToCursor(_findIndex(lifts, ['id', lift.id])),
+        node: lift,
+      })),
     },
     workout: {
       type: workoutType,

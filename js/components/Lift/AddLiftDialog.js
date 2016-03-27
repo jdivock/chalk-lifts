@@ -45,7 +45,10 @@ class AddLiftDialog extends React.Component {
       weight,
     } = this.state;
 
-    const { workout } = this.props;
+    const {
+      workout,
+      handleClose,
+    } = this.props;
 
     Relay.Store.commitUpdate(
       new AddLiftMutation({
@@ -56,6 +59,7 @@ class AddLiftDialog extends React.Component {
         workout,
       })
     );
+    handleClose();
   }
 
   handleLiftChange = ({ target }) => {

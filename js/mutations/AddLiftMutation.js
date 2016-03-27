@@ -64,20 +64,4 @@ export default class AddLiftMutation extends Relay.Mutation {
       },
     }];
   }
-
-  getOptimisticResponse() {
-    return {
-      newLiftEdge: {
-        node: {
-          name: this.props.name,
-          reps: this.props.reps,
-          sets: this.props.sets,
-          weight: this.props.weight,
-        },
-      },
-      workout: {
-        id: this.props.workout.id,
-      },
-    };
-  }
 }
