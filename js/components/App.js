@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import Relay from 'react-relay';
 
 import TopNav from './TopNav';
-import Workout from './Workout';
+import { Workout } from './Workout';
 
 const App = ({ user }) =>
     <div>

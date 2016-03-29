@@ -4,8 +4,8 @@ import moment from 'moment';
 import { Card, CardHeader, CardText } from 'material-ui';
 import Debug from 'debug';
 
-import { Lift, AddLiftDialog } from './Lift';
-import { SquareAddIcon } from './icons';
+import { Lift, AddLiftDialog } from 'components/Lift';
+import { SquareAddIcon } from 'components/icons';
 
 Debug.enable('*');
 const debug = Debug('chalk-lifts:components/Workout');
