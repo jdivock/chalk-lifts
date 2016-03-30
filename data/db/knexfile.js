@@ -1,6 +1,6 @@
 // Update with your config settings.
 require('babel-register');
-const CONN_STRING = require('./data/config').CONN_STRING;
+const CONN_STRING = require('./config').CONN_STRING;
 
 module.exports = {
 

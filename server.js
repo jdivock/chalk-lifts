@@ -50,6 +50,8 @@ const compiler = webpack({
     alias: {
       mutations: 'js/mutations',
       components: 'js/components',
+      db: 'data/db',
+      schema: 'data/schema',
     },
   },
   output: { filename: 'app.js', path: '/' },

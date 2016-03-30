@@ -6,19 +6,19 @@ import {
   getUser,
   getUserByEmail,
   getUsers,
-} from './User';
+} from './db/User';
 
 import {
   getLift,
   getLifts,
   removeLift,
   saveLift,
-} from './Lift';
+} from './db/Lift';
 
 import {
   getWorkout,
   getWorkouts,
-} from './Workout';
+} from './db/Workout';
 
 // Stubs needed to regenerate schema . . . not ideal
 // const removeLift = () => {};

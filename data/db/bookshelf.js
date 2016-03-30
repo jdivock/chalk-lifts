@@ -1,5 +1,5 @@
 import Knex from 'knex';
-import config from '../knexfile';
+import config from './knexfile';
 import Bookshelf from 'bookshelf';
 import Debug from 'debug';
 
