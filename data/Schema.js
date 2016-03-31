@@ -1,4 +1,3 @@
-/* eslint no-use-before-define:0, new-cap: 0 */
 import _findIndex from 'lodash.findindex';
 import Debug from 'debug';
 
@@ -55,6 +54,9 @@ import {
   nodeDefinitions,
 } from 'graphql-relay';
 
+let liftType;
+let userType;
+let workoutType;
 
 const { nodeInterface, nodeField } = nodeDefinitions(
     (globalId) => {
@@ -84,9 +86,26 @@ const { nodeInterface, nodeField } = nodeDefinitions(
     }
 );
 
+// Connections
+
+const {
+  connectionType: WorkoutConnection,
+} = connectionDefinitions({
+  name: 'Workout',
+  nodeType: workoutType,
+});
+
+const {
+  connectionType: LiftConnection,
+  edgeType: GraphQLLiftEdge,
+} = connectionDefinitions({
+  name: 'lift',
+  nodeType: liftType,
+});
+
 // OBJECTS
 
-const liftType = new GraphQLObjectType({
+liftType = new GraphQLObjectType({
   description: 'Records of lifts recorded',
   name: 'Lift',
   fields: () => ({
@@ -120,7 +139,7 @@ const liftType = new GraphQLObjectType({
 });
 
 
-const workoutType = new GraphQLObjectType({
+workoutType = new GraphQLObjectType({
   description: `Workout entry, consisting of individual lifts
     done during workout`,
   name: 'Workout',
@@ -158,7 +177,7 @@ const workoutType = new GraphQLObjectType({
   interfaces: [nodeInterface],
 });
 
-const userType = new GraphQLObjectType({
+userType = new GraphQLObjectType({
   name: 'User',
   fields: () => ({
     id: globalIdField('User'),
@@ -185,23 +204,6 @@ const userType = new GraphQLObjectType({
     },
   }),
   interfaces: [nodeInterface],
-});
-
-// Connections
-
-const {
-  connectionType: WorkoutConnection,
-} = connectionDefinitions({
-  name: 'Workout',
-  nodeType: workoutType,
-});
-
-const {
-  connectionType: LiftConnection,
-  edgeType: GraphQLLiftEdge,
-} = connectionDefinitions({
-  name: 'lift',
-  nodeType: liftType,
 });
 
 // QUERIES
