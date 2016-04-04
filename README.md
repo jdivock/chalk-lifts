@@ -41,6 +41,12 @@ Yeah, writing this (again), using graphQL/Relay, let's see if I can actually get
 Relay GraphIQL on http://localhost:8080
 App on http://localhost:3000
 
+### Schema updates
+
+```sh
+> npm run update-schema
+```
+
 ## Relay Queries
 
 ### Basic
