@@ -1,3 +1,4 @@
+/* eslint prefer-const: 0 */
 import _findIndex from 'lodash.findindex';
 import Debug from 'debug';
 
@@ -59,31 +60,31 @@ let userType;
 let workoutType;
 
 const { nodeInterface, nodeField } = nodeDefinitions(
-    (globalId) => {
-      const { type, id } = fromGlobalId(globalId);
-      if (type === 'Lift') {
-        return getLift(id);
-      } else if (type === 'User') {
-        return getUser(id);
-      } else if (type === 'Workout') {
-        return getWorkout(id);
-      }
-
-      return null;
-    },
-    (obj) => {
-      // This is super hacky, might need bookshelf or a way
-      // to define types to decent what the obj is
-      if (obj.workout_id) {
-        return liftType;
-      } else if (obj.email) {
-        return userType;
-      } else if (obj.user_id) {
-        return workoutType;
-      }
-
-      return null;
+  (globalId) => {
+    const { type, id } = fromGlobalId(globalId);
+    if (type === 'Lift') {
+      return getLift(id);
+    } else if (type === 'User') {
+      return getUser(id);
+    } else if (type === 'Workout') {
+      return getWorkout(id);
     }
+
+    return null;
+  },
+  (obj) => {
+    // This is super hacky, might need bookshelf or a way
+    // to define types to decent what the obj is
+    if (obj.workout_id) {
+      return liftType;
+    } else if (obj.email) {
+      return userType;
+    } else if (obj.user_id) {
+      return workoutType;
+    }
+
+    return null;
+  }
 );
 
 // Connections
@@ -141,7 +142,7 @@ liftType = new GraphQLObjectType({
 
 workoutType = new GraphQLObjectType({
   description: `Workout entry, consisting of individual lifts
-    done during workout`,
+  done during workout`,
   name: 'Workout',
   fields: () => ({
     id: globalIdField('Workout'),
@@ -197,10 +198,10 @@ userType = new GraphQLObjectType({
       type: WorkoutConnection,
       args: connectionArgs,
       resolve: (user, args) =>
-        connectionFromPromisedArray(
-          getWorkouts(user.id),
-          args,
-        ),
+      connectionFromPromisedArray(
+        getWorkouts(user.id),
+        args,
+      ),
     },
   }),
   interfaces: [nodeInterface],
@@ -343,8 +344,8 @@ const RemoveLiftMutation = mutationWithClientMutationId({
     let lift;
 
     return getLift({ id: localLiftId })
-      .then((dbLift) => {lift = dbLift; return removeLift(lift.id);})
-      .then(() => lift);
+    .then((dbLift) => {lift = dbLift; return removeLift(lift.id);})
+    .then(() => lift);
   },
 });
 
